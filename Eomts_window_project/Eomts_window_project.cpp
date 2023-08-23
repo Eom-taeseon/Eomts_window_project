@@ -5,6 +5,7 @@
 #include "Eomts_window_project.h"
 
 #include "struct.h"
+#include "BrushNPen.h"
 
 #define MAX_LOADSTRING 100
 
@@ -163,6 +164,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		//ZeroMemory(&_drawPos, sizeof(_drawPos));
 		break;
+
 	case WM_COMMAND:
 	{
 		int wmId = LOWORD(wParam);
@@ -288,10 +290,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	// 마우스 왼쪽이 올라가면 발생
 	case WM_LBUTTONUP:
 		// 속성 저장
-		_draw draw_tmp(_shape, _brush, _pen, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-		list_draw.push_back(draw_tmp);
+		//_draw draw_tmp(_shape, _brush, _pen, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+		//list_draw.push_back(draw_tmp);
 
-		/*if (_isLine)
+		if (_isLine)
 		{
 			_line line_tmp(_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
 			list_line.push_back(line_tmp);
@@ -310,7 +312,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_circle circle_tmp(_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
 			list_circle.push_back(circle_tmp);
 			InvalidateRect(hWnd, NULL, TRUE);
-		}*/
+		}
 		break;
 
 	case WM_RBUTTONDOWN:
@@ -339,6 +341,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		swprintf_s(_szStringBuffer, MAX_PATH, L"Mouse Position : (%d %d %d %d)",
 			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
 
+		// BrushNPen 클래스 객체 생성
+		BrushNPen BnP;
+
 		/*swprintf_s(_szStringBuffer, MAX_PATH, L"도형 : (%d %d %d %d)",
 			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
 		swprintf_s(_szStringBuffer, MAX_PATH, L"브러시 : (%d %d %d %d)",
@@ -347,22 +352,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);*/
 		TextOut(hdc, 50, 50, _szStringBuffer, lstrlen(_szStringBuffer)); // 위치좌표 실시간 확인
 
-		// 배경 색깔 바꾸기
-		HGDIOBJ hBrush_white = GetStockObject(WHITE_BRUSH);		// 하얀색
-		HGDIOBJ hBrush_ltgray = GetStockObject(LTGRAY_BRUSH);	// 연회색
-		HGDIOBJ hBrush_gray = GetStockObject(GRAY_BRUSH);		// 회색
-		HGDIOBJ hBrush_dkgray = GetStockObject(DKGRAY_BRUSH);	// 진회색
-		HGDIOBJ hBrush_black = GetStockObject(BLACK_BRUSH);	// 검은색
-		HGDIOBJ hBrush_null = GetStockObject(NULL_BRUSH);		// 투명
+		// 가져온 브러쉬 도구를 객체에 전달하면서 기존 qm러쉬 도구를 가져와 저장
+		HBRUSH oldBrush = BnP.Set_OldBrush(hdc);
+		HPEN oldPen = BnP.Set_OldPen(hdc);
+		Rectangle(hdc, 30, 50, 70, 70);
 
-		// 펜 색깔 바꾸기
-		HGDIOBJ hPen_white = GetStockObject(WHITE_PEN);			// 하얀펜
-		HGDIOBJ hPen_black = GetStockObject(BLACK_PEN);			// 검정펜
-		HGDIOBJ hPen_null = GetStockObject(NULL_PEN);			// 검정펜
-
-		// 가져온 브러쉬 도구를 객체에 전달하면서 기존 프러쉬 도구를 가져와 저장
-		HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, hBrush_gray);
-
+		//SelectObject(hdc, hBrush_black);
+		BnP.Select_Brush(hdc, 1);
+		BnP.Select_Pen(hdc, 0);
+		Rectangle(hdc, 30, 90, 70, 130);
 		
 		list<_draw>::iterator iter_draw_End = list_draw.end();
 		list<_draw>::iterator iter_draw_Pos = list_draw.begin();
@@ -370,49 +368,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		list<_position>::iterator iter_pos_End = list_pos.end();
 		list<_position>::iterator iter_pos_Pos = list_pos.begin();
 
-		//if (_isLine) { // 선 그리기
-		//	// 그리는 동안에 보이게 하기
-		//	MoveToEx(hdc, _drawPos.left, _drawPos.top, nullptr);
-		//	LineTo(hdc, _drawPos.right, _drawPos.bottom);
+		if (_isLine) { // 선 그리기
+			// 그리는 동안에 보이게 하기
+			MoveToEx(hdc, _drawPos.left, _drawPos.top, nullptr);
+			LineTo(hdc, _drawPos.right, _drawPos.bottom);
 
-		//	// 그리기가 끝나도 남아있도록 list에서 계속 그리기
-		//	list<_line>::iterator iter_line_End = list_line.end();
-		//	list<_line>::iterator iter_line_Pos = list_line.begin();
+			// 그리기가 끝나도 남아있도록 list에서 계속 그리기
+			list<_line>::iterator iter_line_End = list_line.end();
+			list<_line>::iterator iter_line_Pos = list_line.begin();
 
-		//	for (iter_line_Pos; iter_line_Pos != iter_line_End; ++iter_line_Pos)
-		//	{			
-		//		MoveToEx(hdc, iter_line_Pos->left, iter_line_Pos->top, NULL);
-		//		LineTo(hdc, iter_line_Pos->right, iter_line_Pos->bottom);
-		//	}
-		//}
+			for (iter_line_Pos; iter_line_Pos != iter_line_End; ++iter_line_Pos)
+			{			
+				MoveToEx(hdc, iter_line_Pos->left, iter_line_Pos->top, NULL);
+				LineTo(hdc, iter_line_Pos->right, iter_line_Pos->bottom);
+			}
+		}
 
-		//if (_isRect) { // 사각형 그리기
-		//	// 그리는 동안에 보이게 하기
-		//	Rectangle(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+		if (_isRect) { // 사각형 그리기
+			// 그리는 동안에 보이게 하기
+			Rectangle(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
 
-		//	// 그리기가 끝나도 남아있도록 list에서 계속 그리기
-		//	list<_rect>::iterator iter_rect_End = list_rect.end();
-		//	list<_rect>::iterator iter_rect_Pos = list_rect.begin();
+			// 그리기가 끝나도 남아있도록 list에서 계속 그리기
+			list<_rect>::iterator iter_rect_End = list_rect.end();
+			list<_rect>::iterator iter_rect_Pos = list_rect.begin();
 
-		//	for (iter_rect_Pos; iter_rect_Pos != iter_rect_End; ++iter_rect_Pos)
-		//	{
-		//		Rectangle(hdc, iter_rect_Pos->left, iter_rect_Pos->top, iter_rect_Pos->right, iter_rect_Pos->bottom);
-		//	}
-		//}
+			for (iter_rect_Pos; iter_rect_Pos != iter_rect_End; ++iter_rect_Pos)
+			{
+				Rectangle(hdc, iter_rect_Pos->left, iter_rect_Pos->top, iter_rect_Pos->right, iter_rect_Pos->bottom);
+			}
+		}
 
-		//if (_isCircle) { // 원 그리기
-		//	// 그리는 동안에 보이게 하기
-		//	Ellipse(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+		if (_isCircle) { // 원 그리기
+			// 그리는 동안에 보이게 하기
+			Ellipse(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
 
-		//	// 그리기가 끝나도 남아있도록 list에서 계속 그리기
-		//	list<_circle>::iterator iter_circle_End = list_circle.end();
-		//	list<_circle>::iterator iter_circle_Pos = list_circle.begin();
+			// 그리기가 끝나도 남아있도록 list에서 계속 그리기
+			list<_circle>::iterator iter_circle_End = list_circle.end();
+			list<_circle>::iterator iter_circle_Pos = list_circle.begin();
 
-		//	for (iter_circle_Pos; iter_circle_Pos != iter_circle_End; ++iter_circle_Pos)
-		//	{
-		//		Ellipse(hdc, iter_circle_Pos->left, iter_circle_Pos->top, iter_circle_Pos->right, iter_circle_Pos->bottom);
-		//	}
-		//}
+			for (iter_circle_Pos; iter_circle_Pos != iter_circle_End; ++iter_circle_Pos)
+			{
+				Ellipse(hdc, iter_circle_Pos->left, iter_circle_Pos->top, iter_circle_Pos->right, iter_circle_Pos->bottom);
+			}
+		}
+
+		// 그림을 다 그리면 원래의 브러쉬로 돌려놓는다.
+		SelectObject(hdc, oldBrush);
+		SelectObject(hdc, oldPen);
 
 		EndPaint(hWnd, &ps);
 	}

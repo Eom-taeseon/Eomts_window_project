@@ -30,9 +30,15 @@
     <ClInclude Include="struct.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="BrushNPen.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Eomts_window_project.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BrushNPen.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

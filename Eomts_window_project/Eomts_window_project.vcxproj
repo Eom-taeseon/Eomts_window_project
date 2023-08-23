@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BrushNPen.h" />
     <ClInclude Include="Eomts_window_project.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BrushNPen.cpp" />
     <ClCompile Include="Eomts_window_project.cpp" />
   </ItemGroup>
   <ItemGroup>
