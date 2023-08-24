@@ -75,11 +75,17 @@ enum enum_brush {
 	gray_brush,
 	dkgray_brush,
 	black_brush,
-	null_brush
+	null_brush,
+	red_brush,
+	green_brush,
+	blue_brush,
 };
 
 enum enum_pen {
 	white_pen = 0,
 	black_pen,
-	null_pen
+	null_pen,
+	red_pen,
+	green_pen,
+	blue_pen,
 };

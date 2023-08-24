@@ -180,87 +180,92 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// 선그리기
 		case IDM_DRAW_LINE:
-			SetWindowText(hWnd, L"선 그리기 선택");
-
-			_isLine = TRUE;
 			_shape = enum_shape::line;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		// 사각형 그리기
 		case IDM_DRAW_RECT:
-			SetWindowText(hWnd, L"사각형 그리기 선택");
-
-			_isRect = TRUE;
 			_shape = enum_shape::rect;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		// 원 그리기
 		case IDM_DRAW_CIRCLE:
-			SetWindowText(hWnd, L"원 그리기 선택");
-
-			_isCircle = TRUE;
 			_shape = enum_shape::circle;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break; 
 
 		// 브러시 선택
 		case IDM_BG_WHITE:
 			_brush = enum_brush::white_brush;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_BG_LTGRAY:
 			_brush = enum_brush::ltgray_brush;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_BG_GRAY:
 			_brush = enum_brush::gray_brush;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_BG_DKGRAY:
 			_brush = enum_brush::dkgray_brush;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_BG_BLACK:
 			_brush = enum_brush::black_brush;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_BG_NULL:
 			_brush = enum_brush::null_brush;
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
 
+		case IDM_BG_RED:
+			_brush = enum_brush::red_brush;
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case IDM_BG_GREEN:
+			_brush = enum_brush::green_brush;
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case IDM_BG_BLUE:
+			_brush = enum_brush::blue_brush;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		// 펜 선택
 		case IDM_PEN_WHITE:
 			_pen = enum_pen::white_pen;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_PEN_BLACK:
 			_pen = enum_pen::black_pen;
-
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 
 		case IDM_PEN_NULL:
 			_pen = enum_pen::null_pen;
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
 
+		case IDM_PEN_RED:
+			_pen = enum_pen::red_pen;
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case IDM_PEN_GREEN:
+			_pen = enum_pen::green_pen;
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case IDM_PEN_BLUE:
+			_pen = enum_pen::blue_pen;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 

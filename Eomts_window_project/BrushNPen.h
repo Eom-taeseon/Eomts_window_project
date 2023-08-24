@@ -20,11 +20,17 @@ private:
 	HGDIOBJ hBrush_black = GetStockObject(BLACK_BRUSH);	// °ËÀº»ö
 	HGDIOBJ hBrush_null = GetStockObject(NULL_BRUSH);		// Åõ¸í
 
+	HBRUSH hBrush_red = CreateSolidBrush(RGB(255, 0, 0));
+	HBRUSH hBrush_green = CreateSolidBrush(RGB(0, 255, 0));
+	HBRUSH hBrush_blue = CreateSolidBrush(RGB(0, 0, 255));
 
 	// Ææ »ö±ò ¹Ù²Ù±â
 	HGDIOBJ hPen_white = GetStockObject(WHITE_PEN);			// ÇÏ¾áÆæ
 	HGDIOBJ hPen_black = GetStockObject(BLACK_PEN);			// °ËÁ¤Ææ
 	HGDIOBJ hPen_null = GetStockObject(NULL_PEN);			// °ËÁ¤Ææ
 
+	HPEN hPen_red = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+	HPEN hPen_green = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+	HPEN hPen_blue = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 };
 
