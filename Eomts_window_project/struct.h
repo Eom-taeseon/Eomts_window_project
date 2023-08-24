@@ -3,9 +3,12 @@
 struct _draw {
 	_draw(int _shape, int _brush, int _pen, int _left, int _top, int _right, int _bottom)
 	{
+		// 도형 정보
 		shape = _shape;
 		brush = _brush;
 		pen = _pen;
+
+		// 도형 위치
 		left = _left;
 		top = _top;
 		right = _right;

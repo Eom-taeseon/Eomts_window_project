@@ -290,43 +290,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	// 마우스 왼쪽이 올라가면 발생
 	case WM_LBUTTONUP:
 		// 속성 저장
-		//_draw draw_tmp(_shape, _brush, _pen, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-		//list_draw.push_back(draw_tmp);
-
-		if (_isLine)
+		if (_isDraw)
 		{
-			_line line_tmp(_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-			list_line.push_back(line_tmp);
+			_draw draw_tmp(_shape, _brush, _pen, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+			list_draw.push_back(draw_tmp);
 			InvalidateRect(hWnd, NULL, TRUE);
 		}
-
-		if (_isRect)
-		{
-			_rect rect_tmp(_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-			list_rect.push_back(rect_tmp);
-			InvalidateRect(hWnd, NULL, TRUE);
-		}
-
-		if (_isCircle)
-		{
-			_circle circle_tmp(_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-			list_circle.push_back(circle_tmp);
-			InvalidateRect(hWnd, NULL, TRUE);
-		}
+		//InvalidateRect(hWnd, NULL, TRUE);
 		break;
 
 	case WM_RBUTTONDOWN:
 		// 모든 리스트 제거
-		list_line.clear();
-		list_rect.clear();
-		list_circle.clear();
-
-		if (_isLine)
-			_isLine = FALSE;
-		if (_isRect)
-			_isRect = FALSE;		
-		if (_isCircle)
-			_isCircle = FALSE;
+		list_draw.clear();
 		if (_isDraw)
 			_isDraw = FALSE;
 
@@ -336,79 +311,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	{
 		PAINTSTRUCT ps;
+		BrushNPen BnP; // BrushNPen 클래스 객체 생성
+
 		HDC hdc = BeginPaint(hWnd, &ps);
 		// TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 		swprintf_s(_szStringBuffer, MAX_PATH, L"Mouse Position : (%d %d %d %d)",
 			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-
-		// BrushNPen 클래스 객체 생성
-		BrushNPen BnP;
-
-		/*swprintf_s(_szStringBuffer, MAX_PATH, L"도형 : (%d %d %d %d)",
-			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-		swprintf_s(_szStringBuffer, MAX_PATH, L"브러시 : (%d %d %d %d)",
-			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-		swprintf_s(_szStringBuffer, MAX_PATH, L"펜 : (%d %d %d %d)",
-			_drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);*/
 		TextOut(hdc, 50, 50, _szStringBuffer, lstrlen(_szStringBuffer)); // 위치좌표 실시간 확인
 
-		// 가져온 브러쉬 도구를 객체에 전달하면서 기존 qm러쉬 도구를 가져와 저장
+		// 브러쉬 및 펜 초기화
 		HBRUSH oldBrush = BnP.Set_OldBrush(hdc);
 		HPEN oldPen = BnP.Set_OldPen(hdc);
-		Rectangle(hdc, 30, 50, 70, 70);
 
-		//SelectObject(hdc, hBrush_black);
-		BnP.Select_Brush(hdc, 1);
-		BnP.Select_Pen(hdc, 0);
-		Rectangle(hdc, 30, 90, 70, 130);
+		// 드래그 중인 것 그리기
+		BnP.Select_Brush(hdc, _brush); // Brush 
+		BnP.Select_Pen(hdc, _pen);
+		switch (_shape)
+		{
+			case 0: // line
+				MoveToEx(hdc, _drawPos.left, _drawPos.top, nullptr);
+				LineTo(hdc, _drawPos.right, _drawPos.bottom);
+				break;
+
+			case 1: // rectangle
+				Rectangle(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+				break;
+
+			case 2: // ellipse
+				Ellipse(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+				break;
+
+			default:
+				break;
+		}
 		
 		list<_draw>::iterator iter_draw_End = list_draw.end();
 		list<_draw>::iterator iter_draw_Pos = list_draw.begin();
 
-		list<_position>::iterator iter_pos_End = list_pos.end();
-		list<_position>::iterator iter_pos_Pos = list_pos.begin();
+		for (iter_draw_Pos; iter_draw_Pos != iter_draw_End; ++iter_draw_Pos)
+		{
+			BnP.Select_Brush(hdc, iter_draw_Pos->brush); // Brush 
+			BnP.Select_Pen(hdc, iter_draw_Pos->pen);
 
-		if (_isLine) { // 선 그리기
-			// 그리는 동안에 보이게 하기
-			MoveToEx(hdc, _drawPos.left, _drawPos.top, nullptr);
-			LineTo(hdc, _drawPos.right, _drawPos.bottom);
-
-			// 그리기가 끝나도 남아있도록 list에서 계속 그리기
-			list<_line>::iterator iter_line_End = list_line.end();
-			list<_line>::iterator iter_line_Pos = list_line.begin();
-
-			for (iter_line_Pos; iter_line_Pos != iter_line_End; ++iter_line_Pos)
-			{			
-				MoveToEx(hdc, iter_line_Pos->left, iter_line_Pos->top, NULL);
-				LineTo(hdc, iter_line_Pos->right, iter_line_Pos->bottom);
-			}
-		}
-
-		if (_isRect) { // 사각형 그리기
-			// 그리는 동안에 보이게 하기
-			Rectangle(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
-
-			// 그리기가 끝나도 남아있도록 list에서 계속 그리기
-			list<_rect>::iterator iter_rect_End = list_rect.end();
-			list<_rect>::iterator iter_rect_Pos = list_rect.begin();
-
-			for (iter_rect_Pos; iter_rect_Pos != iter_rect_End; ++iter_rect_Pos)
+			switch (iter_draw_Pos->shape)
 			{
-				Rectangle(hdc, iter_rect_Pos->left, iter_rect_Pos->top, iter_rect_Pos->right, iter_rect_Pos->bottom);
-			}
-		}
+			case 0: // line
+				MoveToEx(hdc, iter_draw_Pos->left, iter_draw_Pos->top, nullptr);
+				LineTo(hdc, iter_draw_Pos->right, iter_draw_Pos->bottom);
+				break;
 
-		if (_isCircle) { // 원 그리기
-			// 그리는 동안에 보이게 하기
-			Ellipse(hdc, _drawPos.left, _drawPos.top, _drawPos.right, _drawPos.bottom);
+			case 1: // rectangle
+				Rectangle(hdc, iter_draw_Pos->left, iter_draw_Pos->top, iter_draw_Pos->right, iter_draw_Pos->bottom);
+				break;
 
-			// 그리기가 끝나도 남아있도록 list에서 계속 그리기
-			list<_circle>::iterator iter_circle_End = list_circle.end();
-			list<_circle>::iterator iter_circle_Pos = list_circle.begin();
+			case 2: // ellipse
+				Ellipse(hdc, iter_draw_Pos->left, iter_draw_Pos->top, iter_draw_Pos->right, iter_draw_Pos->bottom);
+				break;
 
-			for (iter_circle_Pos; iter_circle_Pos != iter_circle_End; ++iter_circle_Pos)
-			{
-				Ellipse(hdc, iter_circle_Pos->left, iter_circle_Pos->top, iter_circle_Pos->right, iter_circle_Pos->bottom);
+			default:
+				break;
 			}
 		}
 

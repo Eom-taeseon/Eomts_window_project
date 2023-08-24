@@ -20,6 +20,7 @@ private:
 	HGDIOBJ hBrush_black = GetStockObject(BLACK_BRUSH);	// °ËÀº»ö
 	HGDIOBJ hBrush_null = GetStockObject(NULL_BRUSH);		// Åõ¸í
 
+
 	// Ææ »ö±ò ¹Ù²Ù±â
 	HGDIOBJ hPen_white = GetStockObject(WHITE_PEN);			// ÇÏ¾áÆæ
 	HGDIOBJ hPen_black = GetStockObject(BLACK_PEN);			// °ËÁ¤Ææ
