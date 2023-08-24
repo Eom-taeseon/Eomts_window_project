@@ -40,6 +40,17 @@ void BrushNPen::Select_Brush(HDC hdc, int brush_num)
 		SelectObject(hdc, hBrush_null);
 		break;
 
+	case 6:
+		SelectObject(hdc, hBrush_red);
+		break;
+
+	case 7:
+		SelectObject(hdc, hBrush_green);
+		break;
+
+	case 8:
+		SelectObject(hdc, hBrush_blue);
+		break;
 	default:
 		break;
 	}
@@ -59,6 +70,18 @@ void BrushNPen::Select_Pen(HDC hdc, int pen_num)
 
 	case 2:
 		SelectObject(hdc, hPen_null);
+		break;
+
+	case 3:
+		SelectObject(hdc, hPen_red);
+		break;
+
+	case 4:
+		SelectObject(hdc, hPen_green);
+		break;
+
+	case 5:
+		SelectObject(hdc, hPen_blue);
 		break;
 
 	default:
