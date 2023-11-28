@@ -123,8 +123,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    TCHAR str[128] = _T("안녕");
+
     switch (message)
-    {
+    {       
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -147,6 +149,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps; // 그리기 정보(Device Context, 지우기 정보, 갱신 영역 등)을 갖고 있으며, InvalidateRect와 InvalidateRgn 함수로 설정된다.
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
+            // Chap06. 텍스트 출력
+            // 1. TextOut
+            TextOut(hdc, 100, 100, _T("Hello"), 5);
+            TextOut(hdc, 100, 200, str, lstrlen(str)); // lstrlenW(), wcslen()
+
+            // 2. Text Color 변경
+            SetTextColor(hdc, RGB(255, 0, 0));  // 문자 전경색
+            SetBkColor(hdc, RGB(0, 0, 255));    // 문자 배경색
+            TextOut(hdc, 200, 100, _T("Hello"), 5);
+
+            SetTextAlign(hdc, TA_BOTTOM | TA_RIGHT); // 문자의 정렬 위치
+            TextOut(hdc, 200, 100, str, lstrlen(str));
+
+            // 3. DrawText
+            SetTextColor(hdc, RGB(0, 0, 0)); // 문자 전경색 (검은색으로 초기화)
+            SetBkColor(hdc, RGB(255, 255, 255)); // 문자 배경색 (하얀색으로 초기화)
+
+            RECT rt;
+            GetClientRect(hWnd, &rt);
+            DrawText(hdc, _T("Hello"), -1, &rt, DT_CENTER);
+            DrawText(hdc, _T("안녕"), -1, &rt,
+                DT_CENTER | DT_VCENTER | DT_SINGLELINE);
             EndPaint(hWnd, &ps);
         }
         break;
