@@ -123,6 +123,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    static HFONT hFont;     // HFONT 자료형의 지역변수 hFont를 static 변수로 선언
+    static HPEN hPen;       // HPEN 자료형의 지역변수 hFont를 static 변수로 선언
+    static HBRUSH hBrush1, hBrush2;   // HBrush 자료형의 지역변수 hBrush, hBrush2를 static 변수로 선언
+    //RECT rt = { 50, 300, 200, 450 };
+
+    // Region
+    RECT rt = { 50, 50, 200, 200 };
+    static HBRUSH hBrush[3];
+    static HRGN hRgn[3];
+    static POINT pts[3] = { {200, 200}, {200, 300}, {300, 300} };
+
+    // 래스터 연산
+    static HBRUSH hRedBrush, hBlueBrush;
+
     switch (message)
     {
     case WM_COMMAND:
@@ -142,38 +156,131 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+    case WM_CREATE: // WM_CREATE 메시지에서 
+        // CreateFont 함수로 크기 100의 명조 폰트를 hFont에 생성함
+        hFont = CreateFont(100, 0, 0, 0, FW_NORMAL, 0, 0, 0, 
+            HANGEUL_CHARSET, 0, 0, 0, 0, _T("궁서"));
+
+        // CreatePen 함수로 PS_DASH, 두께 1, 컬러 RGB(0, 0, 255)를 hPen에 생성함
+        hPen = CreatePen(PS_DASH, 1, RGB(0, 0, 255));
+
+        // CreateSolidBrush로 RGB(0, 0, 255) 붓 생성
+        hBrush1 = CreateSolidBrush(RGB(0, 0, 255));
+        // CreateHatchBrush로 HS_BDIAGONAL, RGB(0, 255, 0) 붓 생성
+        hBrush2 = CreateHatchBrush(HS_BDIAGONAL, RGB(0, 255, 0));
+
+        // Region 생성
+        hBrush[0] = CreateSolidBrush(RGB(255, 0, 0));
+        hBrush[1] = CreateSolidBrush(RGB(0, 255, 0));
+        hBrush[2] = CreateSolidBrush(RGB(0, 0, 255));
+
+        hRgn[0] = CreateRectRgnIndirect(&rt);
+        hRgn[1] = CreateEllipticRgnIndirect(&rt);
+        hRgn[2] = CreatePolygonRgn(pts, 3, ALTERNATE);
+
+        // 래스터 연산
+        hRedBrush = CreateSolidBrush(RGB(255, 0, 0));
+        hBlueBrush = CreateSolidBrush(RGB(0, 0, 255));
+        
+        break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps; // 그리기 정보(Device Context, 지우기 정보, 갱신 영역 등)을 갖고 있으며, InvalidateRect와 InvalidateRgn 함수로 설정된다.
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 
-            // 1. 점 그리기
-            for (int y = 100; y <= 200; y++)
-                for (int x = 100; x <= 200; x++) {
-                    SetPixel(hdc, x, y, RGB(0, 0, 255));
-                }
+            /*
+            // 2. 폰트 생성
+            HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);   // DC의 폰트를 hFont로 변경하고 기존 폰트를 반환하여 hOldFont에 저장
+            TextOut(hdc, 100, 200, _T("안녕"), 4);    // 변환된 hFont로 "안녕"을 출력
 
-            // 2. 직선 그리기
-            LineTo(hdc, 300, 100); 
-            // 사각형 그리기
-            MoveToEx(hdc, 300, 100, NULL);
-            LineTo(hdc, 300, 200);
-            LineTo(hdc, 400, 200);
-            LineTo(hdc, 400, 100);
-            LineTo(hdc, 300, 100);
+            SelectObject(hdc, hOldFont); // DC의 폰트를 기존 디폴트 폰트로 되돌려 놓음
+            TextOut(hdc, 100, 100, _T("Hello"), 5); // 디폴트 폰트로 되돌려 놓은 상태에서 "Hello"를 출력
 
-            // 3. 사각형과 타원 그리기
-            Rectangle(hdc, 500, 100, 600, 200);
-            Ellipse(hdc, 500, 100, 600, 200);
+            // 3. 펜 생성
+            MoveToEx(hdc, 100, 100, NULL);
+            HPEN hOldPen = (HPEN)SelectObject(hdc, hPen); // DC의 펜을 hPen으로 변경하고 기존 폰트를 반환하여 hOldPen에 저장
+            LineTo(hdc, 100, 200);
+            LineTo(hdc, 200, 200);
 
-            Ellipse(hdc, 600, 200, 800, 400);
-            Rectangle(hdc, 600, 200, 800, 400);
+            SelectObject(hdc, hOldPen); // DC의 펜을 기존 디폴트 펜으로 되돌려 놓음
+            LineTo(hdc, 200, 100);
+            LineTo(hdc, 100, 100);
+
+            // 4. 브러시 생성
+            // #1
+            HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+            Rectangle(hdc, 350, 50, 700, 400);
+            SelectObject(hdc, hOldBrush);
+
+            // #2
+            HPEN hOldPen_ = (HPEN)SelectObject(hdc, GetStockObject(NULL_PEN)); // 테두리만 없앰
+            Rectangle(hdc, 400, 100, 500, 200);
+            SelectObject(hdc, hOldPen_);
+
+            // #3
+            hOldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH)); // 안에 색칠만 없앰
+            Rectangle(hdc, 550, 100, 650, 200);
+            SelectObject(hdc, hOldBrush);
+
+            // #4
+            hOldBrush = (HBRUSH)SelectObject(hdc, hBrush2);
+            Rectangle(hdc, 400, 250, 500, 350);
+            SelectObject(hdc, hOldBrush);
+
+            // 5. SetDCPenColor, SetDCBrushColor, GetStockObject 함수
+            SetDCPenColor(hdc, RGB(255, 0, 0)); // hdc의 Pen Color를 RGB(255, 0, 0)으로 설정
+            SetDCBrushColor(hdc, RGB(0, 0, 255)); // hdc의 Brush Color를 RGB(0, 0, 255)으로 설정
+            HPEN oldPen = (HPEN)SelectObject(hdc, (HPEN)GetStockObject(DC_PEN)); // SetDCPenColor로 설정된 DC_PEN을 SelectObject로 사용
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, (HBRUSH)GetStockObject(DC_BRUSH)); // SetDCBrush로 설정된 DC_BRUSH를 SelectObject로 사용
+            Rectangle(hdc, rt.left, rt.top, rt.right, rt.bottom); // 위에서 설정한 좌표대로 사각형 그리기 (DC_PEN, DCBRUSH 사용)
+
+            SelectObject(hdc, oldPen); // 이전 Pen으로 복귀
+            SelectObject(hdc, oldBrush); // 이전 Brush로 복귀
+
+            SetRect(&rt, 200, 450, 300, 550);
+            FillRect(hdc, &rt, (HBRUSH)GetStockObject(DC_BRUSH)); // DC_BRUSH로 다시 색칠
+            */
+
+            // 6. 리전(region)
+            /*for (int i = 0; i < 3; i++) {
+                FillRgn(hdc, hRgn[i], hBrush[i]);
+            }*/
+
+            // 7. 래스터 연산
+            // #1
+            HPEN hOldPen = (HPEN)SelectObject(hdc, GetStockObject(NULL_PEN));
+            HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hRedBrush);
+            Rectangle(hdc, 50, 50, 200, 200);
+            SelectObject(hdc, hOldBrush);
+
+            // #2
+            SetROP2(hdc, R2_NOTXORPEN);
+            hOldBrush = (HBRUSH)SelectObject(hdc, hBlueBrush);
+            Rectangle(hdc, 150, 150, 300, 300);
+            SelectObject(hdc, hOldBrush);
 
             EndPaint(hWnd, &ps);
         }
         break;
-    case WM_DESTROY:
+
+    case WM_DESTROY: // Window 파괴 시 
+        DeleteObject(hFont); // hFont 삭제
+        DeleteObject(hPen); // hPen 삭제
+        DeleteObject(hBrush1);
+        DeleteObject(hBrush2);
+
+        // Region
+        for (int i = 0; i < 3; i++) {
+            DeleteObject(hBrush[i]);
+            DeleteObject(hRgn[i]);
+        }
+
+        // 래스터 연산
+        DeleteObject(hRedBrush);
+        DeleteObject(hBlueBrush);
+
         PostQuitMessage(0);
         break;
     default:
