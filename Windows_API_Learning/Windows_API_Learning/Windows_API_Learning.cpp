@@ -6,11 +6,14 @@
 
 #define MAX_LOADSTRING 100
 
-// [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
-#define R   50
+// [step12_ex1] 타이머에 의한 원 움직이기
+#define STEP    10
+#define R       50
 
-// [step11_ex2] 마우스 드래그에 의한 직선 그리기
-#define M   5
+// [step12_ex2] TimerProc에 의한 원 움직이기
+POINT ptCircle;
+RECT rtClient;
+int direction = VK_RIGHT;
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -22,6 +25,10 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+// [step12_ex2] TimerProc에 의한 원 움직이기
+// TimerProc 생성
+void TimerProc(HWND, UINT, UINT_PTR, DWORD);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -129,14 +136,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
-    static POINT ptMouse;
-    static BOOL bDraw_click = FALSE;
-
-    // [step11_ex2] 마우스 드래그에 의한 직선 그리기
-    static HPEN hBluePen;
-    static BOOL bDraw_drag = FALSE;
-    static POINT ptStart, ptEnd;
+    /*static POINT    ptCircle;
+    static RECT     rtClient;
+    static int      direction = VK_RIGHT;*/
 
     switch (message)
     {
@@ -159,56 +161,99 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_CREATE:
-        hBluePen = CreatePen(PS_DASH, 1, RGB(0, 0, 255));
+        //SetTimer(hWnd, 1, 10, nullptr); // 타이머 번호 : 1, 50밀리 초 단위로 작동, TimerProc는 없음
+        SetTimer(hWnd, 1, 1, (TIMERPROC)TimerProc); // 타이머 번호 : 1, 50밀리 초 단위로 작동, TimerProc는 없음
+        break;
+
+    case WM_SIZE:
+        GetClientRect(hWnd, &rtClient); 
+        ptCircle.x = rtClient.right / 2;    // 중앙에서 시작
+        ptCircle.y = rtClient.bottom / 2;   // 중앙에서 시작
         break;
 
     case WM_LBUTTONDOWN:
-        // [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
-        //ptMouse.x = LOWORD(lParam);
-        //ptMouse.y = HIWORD(lParam);
-        //bDraw_click = TRUE;
-        //InvalidateRect(hWnd, nullptr, TRUE);   // 흔적을 남김
-
-        // [step11_ex2] 마우스 드래그에 의한 직선 그리기
-        ptStart.x = LOWORD(lParam);
-        ptStart.y = HIWORD(lParam);
-        ptEnd = ptStart;
         break;
 
     case WM_LBUTTONUP:
-        // [step11_ex2] 마우스 드래그에 의한 직선 그리기
-        bDraw_drag = TRUE;
-        InvalidateRect(hWnd, nullptr, TRUE);
         break;
 
     case WM_MOUSEMOVE:
-        if (wParam & MK_LBUTTON)
-        {
-            // #1
-            HDC hdc = GetDC(hWnd);
-            int oldMode = SetROP2(hdc, R2_NOTXORPEN);
-
-            HPEN hOldPen = (HPEN)SelectObject(hdc, hBluePen);
-            MoveToEx(hdc, ptStart.x, ptStart.y, NULL);
-            LineTo(hdc, ptEnd.x, ptEnd.y);
-
-            // #2
-            ptEnd.x = LOWORD(lParam);
-            ptEnd.y = HIWORD(lParam);
-
-            MoveToEx(hdc, ptStart.x, ptStart.y, NULL);
-            LineTo(hdc, ptEnd.x, ptEnd.y);
-
-            SelectObject(hdc, hOldPen);
-            SetROP2(hdc, oldMode);
-            ReleaseDC(hWnd, hdc);
-        }
         break;
 
     case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case VK_LEFT:
+            direction = VK_LEFT;
+            break;
+
+        case VK_RIGHT:
+            direction = VK_RIGHT;
+            break;
+
+        case VK_UP:
+            direction = VK_UP;
+            break;
+
+        case VK_DOWN:
+            direction = VK_DOWN;
+            break;
+        }
         break;
 
     case WM_CHAR:
+        break;
+
+    case WM_TIMER:
+        //switch (direction)
+        //{
+        //case VK_LEFT:
+        //    ptCircle.x -= STEP;
+        //    break;
+
+        //case VK_RIGHT:
+        //    ptCircle.x += STEP;
+        //    break;
+
+        //case VK_UP:
+        //    ptCircle.y -= STEP;
+        //    break;
+
+        //case VK_DOWN:
+        //    ptCircle.y += STEP;
+        //    break;
+        //}
+
+        //// 경계를 점검하여 방향 변경
+        //if (ptCircle.x - R <= 0)
+        //{
+        //    ptCircle.x = R;
+        //    direction = VK_RIGHT;
+        //}
+
+        //if (ptCircle.x + R >= rtClient.right)
+        //{
+        //    ptCircle.x = rtClient.right - R;
+        //    direction = VK_LEFT;
+        //}
+
+        //if (ptCircle.y - R <= 0)
+        //{
+        //    ptCircle.y = R;
+        //    direction = VK_DOWN;
+        //}
+
+        //if (ptCircle.y + R >= rtClient.bottom)
+        //{
+        //    ptCircle.y = rtClient.bottom - R;
+        //    direction = VK_UP;
+        //}
+
+        //RECT rt;
+        //SetRect(&rt, ptCircle.x - R - 10, ptCircle.y - R - 10,
+        //    ptCircle.x + R + 10, ptCircle.y + R + 10);
+        //InvalidateRect(hWnd, &rt, TRUE);
+        //InvalidateRect(hWnd, NULL, TRUE);   // 전체 영역 지우고 그리기
         break;
 
     case WM_PAINT:
@@ -216,26 +261,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps; // 그리기 정보(Device Context, 지우기 정보, 갱신 영역 등)을 갖고 있으며, InvalidateRect와 InvalidateRgn 함수로 설정된다.
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            Ellipse(hdc, ptCircle.x - R, ptCircle.y - R, ptCircle.x + R, ptCircle.y + R);
 
-            // [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
-            /*if (bDraw)
-                Ellipse(hdc, ptMouse.x - R, ptMouse.y - R, ptMouse.x + R, ptMouse.y + R);*/
-
-            // [step11_ex2] 마우스 드래그에 의한 직선 그리기
-            if (bDraw_drag)
-            {
-                MoveToEx(hdc, ptStart.x, ptStart.y, NULL);
-                LineTo(hdc, ptEnd.x, ptEnd.y);
-                Rectangle(hdc, ptStart.x - M, ptStart.y - M, ptStart.x + M, ptStart.y + M);
-                Rectangle(hdc, ptEnd.x - M, ptEnd.y - M, ptEnd.x + M, ptEnd.y + M);
-                
-            }
             EndPaint(hWnd, &ps);
         }
         break;
 
     case WM_DESTROY:
-        DeleteObject(hBluePen);
+        KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
     default:
@@ -263,4 +296,40 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     
     return (INT_PTR)FALSE;
+}
+
+void TimerProc(HWND hWnd, UINT uMsg, UINT_PTR nID, DWORD dwTime)
+{
+    switch (direction)
+    {
+    case VK_LEFT:
+        ptCircle.x -= STEP;
+        if (ptCircle.x <= R)
+            direction = VK_RIGHT;
+        break;
+
+    case VK_RIGHT:
+        ptCircle.x += STEP;
+        if (ptCircle.x >= rtClient.right - R)
+            direction = VK_LEFT;
+        break;
+
+    case VK_UP:
+        ptCircle.y -= STEP;
+        if (ptCircle.y <= R)
+            direction = VK_DOWN;
+        break;
+
+    case VK_DOWN:
+        ptCircle.y += STEP;
+        if (ptCircle.y >= rtClient.bottom - R)
+            direction = VK_UP;
+        break;
+    }
+
+    RECT rt;
+    SetRect(&rt, ptCircle.x - R - 10, ptCircle.y - R - 10,
+        ptCircle.x + R + 10, ptCircle.y + R + 10);
+    InvalidateRect(hWnd, &rt, TRUE);
+    //InvalidateRect(hWnd, nullptr, TRUE);
 }
