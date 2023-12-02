@@ -6,10 +6,11 @@
 
 #define MAX_LOADSTRING 100
 
-// [step09_ex2] 방향키에 의한 원 이동
-// [step09_ex3] GetAsyncKeyState 함수에 의한 방향키 체크
-#define STEP    10
-#define R       50
+// [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
+#define R   50
+
+// [step11_ex2] 마우스 드래그에 의한 직선 그리기
+#define M   5
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -73,7 +74,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
+    wcex.style          = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS; // 더블클릭 가능한 윈도우 스타일 등록 : CB_CBLCLKS
     wcex.lpfnWndProc    = WndProc;
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
@@ -128,9 +129,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step09_ex2] 방향 키에 의한 원 이동
-    // [step09_ex3] GetAsyncKeyState 함수에 의한 방향키 체크
-    static POINT ptCircle = { 100, 100 };
+    // [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
+    static POINT ptMouse;
+    static BOOL bDraw_click = FALSE;
+
+    // [step11_ex2] 마우스 드래그에 의한 직선 그리기
+    static HPEN hBluePen;
+    static BOOL bDraw_drag = FALSE;
+    static POINT ptStart, ptEnd;
+
     switch (message)
     {
     case WM_COMMAND:
@@ -152,47 +159,56 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_CREATE:
+        hBluePen = CreatePen(PS_DASH, 1, RGB(0, 0, 255));
+        break;
+
+    case WM_LBUTTONDOWN:
+        // [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
+        //ptMouse.x = LOWORD(lParam);
+        //ptMouse.y = HIWORD(lParam);
+        //bDraw_click = TRUE;
+        //InvalidateRect(hWnd, nullptr, TRUE);   // 흔적을 남김
+
+        // [step11_ex2] 마우스 드래그에 의한 직선 그리기
+        ptStart.x = LOWORD(lParam);
+        ptStart.y = HIWORD(lParam);
+        ptEnd = ptStart;
+        break;
+
+    case WM_LBUTTONUP:
+        // [step11_ex2] 마우스 드래그에 의한 직선 그리기
+        bDraw_drag = TRUE;
+        InvalidateRect(hWnd, nullptr, TRUE);
+        break;
+
+    case WM_MOUSEMOVE:
+        if (wParam & MK_LBUTTON)
+        {
+            // #1
+            HDC hdc = GetDC(hWnd);
+            int oldMode = SetROP2(hdc, R2_NOTXORPEN);
+
+            HPEN hOldPen = (HPEN)SelectObject(hdc, hBluePen);
+            MoveToEx(hdc, ptStart.x, ptStart.y, NULL);
+            LineTo(hdc, ptEnd.x, ptEnd.y);
+
+            // #2
+            ptEnd.x = LOWORD(lParam);
+            ptEnd.y = HIWORD(lParam);
+
+            MoveToEx(hdc, ptStart.x, ptStart.y, NULL);
+            LineTo(hdc, ptEnd.x, ptEnd.y);
+
+            SelectObject(hdc, hOldPen);
+            SetROP2(hdc, oldMode);
+            ReleaseDC(hWnd, hdc);
+        }
         break;
 
     case WM_KEYDOWN:
-        // [step09_ex1] ESC 키에 의한 프로그램 종료
-        if (wParam == VK_ESCAPE) // ESC 키를 눌렀다면
-        {
-            if (MessageBox(hWnd, _T("종료?"), _T("msg"), // 메시지 박스를 만들어서
-                MB_OKCANCEL | MB_ICONQUESTION) == IDOK) // 확인 버튼을 누르면
-                DestroyWindow(hWnd); // WM_DESTROY
-        }
+        break;
 
-        // [step09_ex2] 방향 키에 의한 원 이동
-        /*
-        switch (wParam)
-        {
-        case VK_LEFT:
-            ptCircle.x -= STEP;
-            break;
-
-        case VK_RIGHT:
-            ptCircle.x += STEP;
-            break;
-
-        case VK_UP:
-            ptCircle.y -= STEP;
-            break;
-
-        case VK_DOWN:
-            ptCircle.y += STEP;
-            break;
-        }
-        // InvalidateRect 함수로 클라이언트 영역 전체를 무효화시켜 WM_PAINT 메시지를 발생시킨다.
-        InvalidateRect(hWnd, NULL, TRUE); // bErase = TRUE (bErase = False일 경우, 원의 흔적이 남음)
-        */
-
-        // [step09_ex3] GetAsyncKeyState 함수에 의한 방향키 체크
-        if (GetAsyncKeyState(VK_LEFT) & 0x8000) ptCircle.x -= STEP;
-        if (GetAsyncKeyState(VK_RIGHT) & 0x8000) ptCircle.x += STEP;
-        if (GetAsyncKeyState(VK_UP) & 0x8000) ptCircle.y -= STEP;
-        if (GetAsyncKeyState(VK_DOWN) & 0x8000) ptCircle.y += STEP;
-        InvalidateRect(hWnd, NULL, TRUE);
+    case WM_CHAR:
         break;
 
     case WM_PAINT:
@@ -200,13 +216,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps; // 그리기 정보(Device Context, 지우기 정보, 갱신 영역 등)을 갖고 있으며, InvalidateRect와 InvalidateRgn 함수로 설정된다.
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            Ellipse(hdc, ptCircle.x - R, ptCircle.y - R,
-                ptCircle.x + R, ptCircle.y + R);
+
+            // [step11_ex1] 마우스 왼쪽 버튼 클릭 위치에 원 그리기
+            /*if (bDraw)
+                Ellipse(hdc, ptMouse.x - R, ptMouse.y - R, ptMouse.x + R, ptMouse.y + R);*/
+
+            // [step11_ex2] 마우스 드래그에 의한 직선 그리기
+            if (bDraw_drag)
+            {
+                MoveToEx(hdc, ptStart.x, ptStart.y, NULL);
+                LineTo(hdc, ptEnd.x, ptEnd.y);
+                Rectangle(hdc, ptStart.x - M, ptStart.y - M, ptStart.x + M, ptStart.y + M);
+                Rectangle(hdc, ptEnd.x - M, ptEnd.y - M, ptEnd.x + M, ptEnd.y + M);
+                
+            }
             EndPaint(hWnd, &ps);
         }
         break;
 
     case WM_DESTROY:
+        DeleteObject(hBluePen);
         PostQuitMessage(0);
         break;
     default:
