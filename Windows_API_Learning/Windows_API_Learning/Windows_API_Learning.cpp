@@ -11,16 +11,27 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
+<<<<<<< HEAD
 // [step14_ex2] 클라이언크 크기(400X400)를 갖는 윈도우 생성1
 // [step14_ex3] 클라이언크 크기(400X400)를 갖는 윈도우 생성2
 #define WIDTH 400
 #define HEIGHT 400
+=======
+// [step14_ex2] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 1
+// [step14_ex3] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 2
+//#define WIDTH 400
+//#define HEIGHT 400
+>>>>>>> origin/Windows_API_Programming
 
 // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
 #define SIZE 100
 #define M 5
 #define N 5
+<<<<<<< HEAD
 enum blockType { EMPTY, RED, BLUE };
+=======
+enum blockType {EMPTY, RED, BLUE};
+>>>>>>> origin/Windows_API_Programming
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -88,7 +99,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
     //wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINDOWSAPILEARNING);
+<<<<<<< HEAD
     wcex.lpszMenuName   = NULL;
+=======
+    // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE 인 M X N 보드
+    wcex.lpszMenuName   = NULL; // 메뉴 명을 지정 안함 -> 메뉴가 사라진다
+>>>>>>> origin/Windows_API_Programming
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -109,8 +125,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
+<<<<<<< HEAD
    // [step14_ex2] 클라이언크 크기(400X400)를 갖는 윈도우 생성1
    //RECT rtClient = { 0, 0, WIDTH, HEIGHT };
+=======
+   // [step14_ex2] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 1
+   // [step14_ex3] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 2
+   //RECT rtClient = { 0, 0, WIDTH, HEIGHT }; // Cleint Area
+>>>>>>> origin/Windows_API_Programming
    //AdjustWindowRect(&rtClient, WS_OVERLAPPEDWINDOW, TRUE);
 
    //int nWidth = rtClient.right - rtClient.left;
@@ -119,12 +141,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    //    CW_USEDEFAULT, 0, nWidth, nHeight, nullptr, nullptr, hInstance, nullptr);
 
    // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+<<<<<<< HEAD
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_CAPTION | WS_SYSMENU,
+=======
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_CAPTION | WS_SYSMENU, 
+>>>>>>> origin/Windows_API_Programming
        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    // original
    //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+<<<<<<< HEAD
    //   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+=======
+   //   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInst, nullptr);
+>>>>>>> origin/Windows_API_Programming
 
    if (!hWnd)
    {
@@ -165,6 +195,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // [step14_ex1] 윈도우 타이틀에 시간 출력
         SetTimer(hWnd, 1, 1000, NULL);
         SendMessage(hWnd, WM_TIMER, 1, 0);
+<<<<<<< HEAD
+=======
+
+        // [step14_ex3] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 2
+        // 중괄호 중요!!
+        //{
+        //    RECT rtClient = { 0, 0, WIDTH, HEIGHT }; // Cleint Area
+        //    AdjustWindowRect(&rtClient, WS_OVERLAPPEDWINDOW, TRUE);
+
+        //    int nWidth = rtClient.right - rtClient.left;
+        //    int nHeight = rtClient.bottom - rtClient.top;
+        //    //MoveWindow(hWnd, 0, 0, nWidth, nHeight, TRUE);
+        //    SetWindowPos(hWnd, NULL, 0, 0, nWidth, nHeight, SWP_NOMOVE);
+        //}
+
+        // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+        {
+            RECT rtClient = { 0, 0, SIZE * M, SIZE * N };
+            AdjustWindowRect(&rtClient, WS_CAPTION | WS_SYSMENU, FALSE); 
+
+            nWidth = rtClient.right - rtClient.left;
+            nHeight = rtClient.bottom - rtClient.top;
+            //MoveWindow(hWnd, 0, 0, nWidth, nHeight, TRUE);
+            SetWindowPos(hWnd, NULL, 0, 0, nWidth, nHeight, SWP_NOMOVE);
+        }
+
+        break;
+
+    case WM_TIMER:
+        // [step14_ex1] 윈도우 타이틀에 시간 출력
+        GetLocalTime(&st);
+        wsprintf(szTime, _T("%d-%d-%d : %d:%d:%d"),
+            st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+        SetWindowText(hWnd, szTime);
+        //SendMessage(hWnd, WM_SETTEXT, 0, (LPARAM)szTime);
+        break;
+>>>>>>> origin/Windows_API_Programming
 
         // [step14_ex3] 클라이언크 크기(400X400)를 갖는 윈도우 생성2
         //{
@@ -226,13 +293,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         InvalidateRect(hWnd, NULL, TRUE); // 화면 초기화
     }
+<<<<<<< HEAD
     break;
+=======
+>>>>>>> origin/Windows_API_Programming
 
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+<<<<<<< HEAD
 
             // [step14_ex2] 클라이언크 크기(400X400)를 갖는 윈도우 생성1
             //Ellipse(hdc, 0, 0, WIDTH, HEIGHT);
@@ -266,6 +337,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     Rectangle(hdc, x, y, x + SIZE, y + SIZE);
                     //Ellipse(hdc, x + 5, y + 5, x + SIZE - 5, y + SIZE - 5);
 
+=======
+            // [step14_ex2] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 1
+            // [step14_ex3] 클라이언트 크기(400 X 400)를 갖는 윈도우 생성 2
+            //Ellipse(hdc, 0, 0, WIDTH, HEIGHT);
+
+            // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+            for(int i = 0; i<M; i++)
+                for (int j = 0; j < N; j++)
+                {
+                    int x = j * SIZE;
+                    int y = i * SIZE;
+                    Rectangle(hdc, x, y, x + SIZE, y + SIZE);
+                    if (board[i][j] == EMPTY)
+                        continue;
+
+                    HPEN oldPen = (HPEN)SelectObject(hdc,
+                        (HPEN)GetStockObject(NULL_PEN));
+
+                    COLORREF color;
+                    switch (board[i][j])
+                    {
+                    case RED:
+                        color = RGB(255, 0, 0);
+                        break;
+                    case BLUE:
+                        color = RGB(0, 0, 255);
+                        break;
+                    }
+
+                    hBrush = CreateSolidBrush(color);
+                    oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+                     Rectangle(hdc, x, y, x+SIZE, y+SIZE);
+                    //Ellipse(hdc, x + 5, y + 5, x + SIZE - 5, y + SIZE - 5);
+
+>>>>>>> origin/Windows_API_Programming
                     SelectObject(hdc, oldBrush);
                     SelectObject(hdc, oldPen);
                 }

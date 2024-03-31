@@ -3,8 +3,13 @@
   "WorkspaceRootPath": "C:\\Users\\PC\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\Windows_API_Learn\\Eomts_window_project\\Windows_API_Learning\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{6030BBBD-14FC-4B44-8DEC-0F837245CA9F}|Windows_API_Learning\\Windows_API_Learning.vcxproj|C:\\Users\\PC\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\Windows_API_Learn\\Eomts_window_project\\Windows_API_Learning\\Windows_API_Learning\\Windows_API_Learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6030BBBD-14FC-4B44-8DEC-0F837245CA9F}|Windows_API_Learning\\Windows_API_Learning.vcxproj|solutionrelative:Windows_API_Learning\\Windows_API_Learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+=======
+      "AbsoluteMoniker": "D:0:0:{C820BC24-9F7C-4A78-BF26-DCC0B21D3859}|Windows_API_Learning\\Windows_API_Learning.vcxproj|C:\\Users\\PC\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\Windows_API_Learn\\Eomts_window_project\\Windows_API_Learning\\Windows_API_Learning\\Windows_API_Learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{C820BC24-9F7C-4A78-BF26-DCC0B21D3859}|Windows_API_Learning\\Windows_API_Learning.vcxproj|solutionrelative:Windows_API_Learning\\Windows_API_Learning.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+>>>>>>> origin/Windows_API_Programming
     }
   ],
   "DocumentGroupContainers": [
@@ -24,9 +29,15 @@
               "RelativeDocumentMoniker": "Windows_API_Learning\\Windows_API_Learning.cpp",
               "ToolTip": "C:\\Users\\PC\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\Windows_API_Learn\\Eomts_window_project\\Windows_API_Learning\\Windows_API_Learning\\Windows_API_Learning.cpp",
               "RelativeToolTip": "Windows_API_Learning\\Windows_API_Learning.cpp",
+<<<<<<< HEAD
               "ViewState": "AQIAAAYAAAAAAAAAAAAAABcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-03-25T13:45:06.534Z",
+=======
+              "ViewState": "AQIAAJ4AAAAAAAAAAAAmwKkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-20T15:21:00.409Z",
+>>>>>>> origin/Windows_API_Programming
               "EditorCaption": ""
             }
           ]
