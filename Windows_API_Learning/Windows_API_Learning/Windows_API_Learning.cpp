@@ -11,11 +11,16 @@ HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
-// [step13_ex2] 시간 문자열 출력
-#define _USE_MATH_DEFINES // for M_PI
-#include <math.h>
-#define R   100
-#define RADIAN(X) ((X) * M_PI / 180)
+// [step14_ex2] 클라이언크 크기(400X400)를 갖는 윈도우 생성1
+// [step14_ex3] 클라이언크 크기(400X400)를 갖는 윈도우 생성2
+#define WIDTH 400
+#define HEIGHT 400
+
+// [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+#define SIZE 100
+#define M 5
+#define N 5
+enum blockType { EMPTY, RED, BLUE };
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -74,7 +79,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS; // 더블클릭 가능한 윈도우 스타일 등록 : CB_CBLCLKS
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc    = WndProc;
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
@@ -82,7 +87,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSAPILEARNING));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = NULL; // 메뉴 없애기
+    //wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINDOWSAPILEARNING);
+    wcex.lpszMenuName   = NULL;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -103,8 +109,22 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, 
-      CW_USEDEFAULT, 0, 400, 400, nullptr, nullptr, hInstance, nullptr); // [step13_ex2] 시계 그리기
+   // [step14_ex2] 클라이언크 크기(400X400)를 갖는 윈도우 생성1
+   //RECT rtClient = { 0, 0, WIDTH, HEIGHT };
+   //AdjustWindowRect(&rtClient, WS_OVERLAPPEDWINDOW, TRUE);
+
+   //int nWidth = rtClient.right - rtClient.left;
+   //int nHeight = rtClient.bottom - rtClient.top;
+   //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   //    CW_USEDEFAULT, 0, nWidth, nHeight, nullptr, nullptr, hInstance, nullptr);
+
+   // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_CAPTION | WS_SYSMENU,
+       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+   // original
+   //HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   //   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -129,37 +149,52 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step13_ex1] 시간 문자열 출력
-    /*SYSTEMTIME st;
-    static RECT rtClient;
-    static TCHAR szTime[128];*/
-
-    // [step13_ex2] 시계 그리기
+    // [step14_ex1] 윈도우 타이틀에 시간 출력
     SYSTEMTIME st;
-    POINT pt;
-    double theta;
+    TCHAR szTime[128];
 
-    static RECT rtClient;
-    static TCHAR szTime[128];
-    static POINT ptCircle;
-    static double sec, minute, hour;
-    static HPEN hPen[3];
+    // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+    int ix, iy;
+    int nWidth, nHeight;
+    HBRUSH hBrush, oldBrush;
+    static int board[M][N];
 
     switch (message)
     {
     case WM_CREATE:
-        // [step13_ex1] 시간 문자열 출력
-        /*SetTimer(hWnd, 1, 1000, NULL); // 1초 간격으로 진행되는 타이머 생성
-        SendMessage(hWnd, WM_TIMER, 1, 0); // WndProc에 1번 타이머를 전달*/
-
-        // [step13_ex2] 시계 그리기
-        hPen[0] = CreatePen(PS_SOLID, 8, RGB(0, 0, 255));
-        hPen[1] = CreatePen(PS_SOLID, 4, RGB(0, 255, 0));
-        hPen[2] = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
-        SetTimer(hWnd, 1, 1000, NULL); // 1초 간격으로 진행되는 타이머 생성
+        // [step14_ex1] 윈도우 타이틀에 시간 출력
+        SetTimer(hWnd, 1, 1000, NULL);
         SendMessage(hWnd, WM_TIMER, 1, 0);
-        break;
 
+        // [step14_ex3] 클라이언크 크기(400X400)를 갖는 윈도우 생성2
+        //{
+        //    RECT rtClient = { 0, 0, WIDTH, HEIGHT };
+        //    AdjustWindowRect(&rtClient, WS_OVERLAPPEDWINDOW, TRUE);
+
+        //    int nWidth = rtClient.right - rtClient.left;
+        //    int nHeight = rtClient.bottom - rtClient.top;
+        //    MoveWindow(hWnd, 0, 0, nWidth, nHeight, TRUE);
+        //}
+
+        // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+        {
+            RECT rtClient = { 0, 0, SIZE * N, SIZE * M };
+            AdjustWindowRect(&rtClient, WS_CAPTION | WS_SYSMENU, FALSE);
+            
+            nWidth = rtClient.right - rtClient.left;
+            nHeight = rtClient.bottom - rtClient.top;
+            SetWindowPos(hWnd, NULL, 0, 0, nWidth, nHeight, SWP_NOMOVE);
+        }
+        break;
+    case WM_TIMER:
+        // [step14_ex1] 윈도우 타이틀에 시간 출력
+        GetLocalTime(&st);
+        wsprintf(szTime, _T("%d-%d-%d : %d:%d:%d"),
+            st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond
+        );
+        SetWindowText(hWnd, szTime);
+        SendMessage(hWnd, WM_SETTEXT, 0, (LPARAM)szTime);
+        break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -178,110 +213,68 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
-    case WM_SIZE:
-        // [step13_ex1] 시간 문자열 출력
-        //GetClientRect(hWnd, &rtClient); // rtClient를 불러오기
-
-        // [step13_ex2] 시계 그리기
-        GetClientRect(hWnd, &rtClient);
-        ptCircle.x = rtClient.right / 2;
-        ptCircle.y = rtClient.bottom / 2;
-        break;
-
     case WM_LBUTTONDOWN:
-        break;
+    {
+        ix = LOWORD(lParam) / SIZE;
+        iy = HIWORD(lParam) / SIZE;
+        if (ix >= N || iy >= M)
+            break;
 
-    case WM_LBUTTONUP:
-        break;
+        board[iy][ix]++;
+        if (board[iy][ix] > BLUE)
+            board[iy][ix] = EMPTY;
 
-    case WM_MOUSEMOVE:
-        break;
-
-    case WM_KEYDOWN:
-        break;
-
-    case WM_CHAR:
-        break;
-
-    case WM_TIMER:
-        // [step13_ex1] 시간 문자열 출력
-        /*GetLocalTime(&st); // SystemTime을 입력
-        wsprintf(szTime, _T("%d-%d-%d : %d:%d:%d"),
-            st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-        InvalidateRect(hWnd, NULL, TRUE); // 전체 화면에 대한 초기화*/
-        GetLocalTime(&st);
-        wsprintf(szTime, _T("%d-%d-%d : %d:%d:%d"), 
-            st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-        sec = st.wSecond;
-        minute = st.wMinute + st.wSecond / 60.0;
-        hour = st.wHour + minute / 60.0;
-        InvalidateRect(hWnd, NULL, TRUE);
-        break;
+        InvalidateRect(hWnd, NULL, TRUE); // 화면 초기화
+    }
+    break;
 
     case WM_PAINT:
         {
-            PAINTSTRUCT ps; // 그리기 정보(Device Context, 지우기 정보, 갱신 영역 등)을 갖고 있으며, InvalidateRect와 InvalidateRgn 함수로 설정된다.
+            PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            // [step13_ex1] 시간 문자열 출력
-            //DrawText(hdc, szTime, -1, &rtClient, DT_CENTER | DT_VCENTER | DT_SINGLELINE); // WM_SIZE에서 rtClient를 설정해야 사용 가능
 
-            // [step13_ex2] 시계 그리기
-            // 1. 현재 시간 문자열 출력
-            DrawText(hdc, szTime, -1, &rtClient, DT_CENTER |DT_SINGLELINE);
+            // [step14_ex2] 클라이언크 크기(400X400)를 갖는 윈도우 생성1
+            //Ellipse(hdc, 0, 0, WIDTH, HEIGHT);
 
-            // 2. 시계 원형 그리기
-            Ellipse(hdc, ptCircle.x - R, ptCircle.y - R, ptCircle.x + R, ptCircle.y + R);
+            // [step14_ex4] 하나의 블록의 크기가 SIZE X SIZE인 M X N 보드
+            for (int i = 0; i < M; i++)
+                for (int j = 0; j < N; j++)
+                {
+                    int x = j * SIZE;
+                    int y = i * SIZE;
+                    Rectangle(hdc, x, y, x + SIZE, y + SIZE);
+                    if (board[i][j] == EMPTY)
+                        continue;
 
-            // 3. 시계에 1~12 출력
-            for (int i = 1; i <= 12; i++)
-            {
-                theta = (i - 3) * 30;
-                pt.x = (int)(R * cos(RADIAN(theta)) + ptCircle.x + 0.5);
-                pt.y = (int)(R * sin(RADIAN(theta)) + ptCircle.y + 0.5);
+                    HPEN oldPen = (HPEN)SelectObject(hdc, (HPEN)GetStockObject(NULL_PEN));
 
-                TCHAR str[10];
-                wsprintf(str, _T("%d"), i);
-                RECT rt;
-                SetRect(&rt, pt.x - 10, pt.y - 10, pt.x + 10, pt.y + 10);
-                DrawText(hdc, str, -1, &rt, DT_CENTER);
-            }
+                    COLORREF color = RGB(0, 0, 0);
+                    switch (board[i][j])
+                    {
+                    case RED:
+                        color = RGB(255, 0, 0);
+                        break;
+                    case BLUE:
+                        color = RGB(0, 0, 255);
+                        break;
+                    }
 
-            // 4. 시침 그리기
-            theta = (hour * 30 - 90);
-            pt.x = (int)((R - 20) * cos(RADIAN(theta)) + ptCircle.x + 0.5);
-            pt.y = (int)((R - 20) * sin(RADIAN(theta)) + ptCircle.y + 0.5);
-            HPEN hOldPen = (HPEN)SelectObject(hdc, hPen[0]);
-            MoveToEx(hdc, ptCircle.x, ptCircle.y, NULL);
-            LineTo(hdc, pt.x, pt.y);
+                    hBrush = CreateSolidBrush(color);
+                    oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 
-            // 5. 분침 그리기
-            theta = (minute * 6 - 90);
-            pt.x = (int)((R - 10) * cos(RADIAN(theta)) + ptCircle.x + 0.5);
-            pt.y = (int)((R - 10) * sin(RADIAN(theta)) + ptCircle.y + 0.5);
-            SelectObject(hdc, hPen[1]);
-            MoveToEx(hdc, ptCircle.x, ptCircle.y, NULL);
-            LineTo(hdc, pt.x, pt.y);
-            
-            // 6. 초침 그리기
-            theta = (sec * 6 - 90);
-            pt.x = (int)((R - 20) * cos(RADIAN(theta)) + ptCircle.x + 0.5);
-            pt.y = (int)((R - 20) * sin(RADIAN(theta)) + ptCircle.y + 0.5);
-            SelectObject(hdc, hPen[2]);
-            MoveToEx(hdc, ptCircle.x, ptCircle.y, NULL);
-            LineTo(hdc, pt.x, pt.y);
+                    Rectangle(hdc, x, y, x + SIZE, y + SIZE);
+                    //Ellipse(hdc, x + 5, y + 5, x + SIZE - 5, y + SIZE - 5);
 
-            // 마무리
-            SelectObject(hdc, hOldPen);
+                    SelectObject(hdc, oldBrush);
+                    SelectObject(hdc, oldPen);
+                }
             EndPaint(hWnd, &ps);
         }
         break;
-
     case WM_DESTROY:
-        // [step13_ex1] 시간 문자열 출력
-        //KillTimer(hWnd, 1);
-        // [step13_ex2] 시계 그리기
-        for (int i = 0; i < 3; i++);
+        // [step14_ex1] 윈도우 타이틀에 시간 출력
+        KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
     default:
@@ -307,6 +300,5 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     }
-    
     return (INT_PTR)FALSE;
 }
