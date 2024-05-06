@@ -6,27 +6,6 @@
 
 #define MAX_LOADSTRING 100
 
-// [step15_ex1] MM_TEXT 모드, 원점 (cxClient/2, cyClient/2)
-//#define SIZE 100
-
-// [step15_ex2] MM_LOMETRIC 모드, 원점 변경
-//#define SIZE 500
-
-// [step15_ex3] MM_ISOMETIRC 모드, 원점 (cxClient/2, cyClient)
-//#define WIDTH 400
-//#define HEIGHT 400
-//#define SIZE 100
-
-// [step15_ex4] sine 그래프 그리기 MM_ISOTROPIC 모드, 원점 (cxClient / 2, cyClient / 2) STL vector 사용 sine 데이터 저장
-#define _USE_MATH_DEFINES // for M_PI
-#include <math.h>
-#define RADIAN(X) ((X) * M_PI / 180)
-#define WIDTH 600
-#define HEIGHT 200
-#define SCALE 100
-#include <vector>   // for STL vector
-using namespace std;
-
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -144,59 +123,34 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step15_ex1] MM_TEXT 모드, 원점 (cxClient/2, cyClient/2)
-    // [step15_ex2] MM_LOMETRIC 모드, 원점 변경
-    // [step15_ex3] MM_ISOMETIRC 모드, 원점 (cxClient/2, cyClient)
-    // [step15_ex4] sine 그래프 그리기 MM_ISOTROPIC 모드, 원점 (cxClient / 2, cyClient / 2) STL vector 사용 sine 데이터 저장
-    static int cxClient, cyClient;
+    // [step16_ex1] BitBlt 함수
+    /*static HBITMAP hBit;
+    static BITMAP bit;*/
 
-    // [step15_ex4] sine 그래프 그리기 MM_ISOTROPIC 모드, 원점 (cxClient / 2, cyClient / 2) STL vector 사용 sine 데이터 저장
-    static vector<POINT> sine_points;
+    // [step16_ex2] StretchBlt 함수
+    static HBITMAP hBit;
+    static BITMAP bit;
+    static int  cxClient, cyClient;
+    static HDC  memDC;
 
     switch (message)
     {
     case WM_CREATE:
-    // [step15_ex3] MM_ISOMETIRC 모드, 원점 (cxClient/2, cyClient)
-    /* {
-        // WM_CREATE 메시지에서 윈도우의 Client 영역의 크기를 WIDTH, HEIGHT로 변경
-        RECT rtClient = { 0, 0, WIDTH, HEIGHT };    // Client Area
-        AdjustWindowRect(&rtClient, WS_OVERLAPPEDWINDOW, TRUE);
+        // [step16_ex1] BitBlt 함수
+        /*hBit = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+        //hBit = (HBITMAP)LoadImage(hInst, _T("Doom.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+        //hBit = (HBITMAP)LoadImage(hInst, MAKEINTRESOURCE(IDB_BITMAP1), IMAGE_BITMAP, 0, 0, LR_DEFAULTCOLOR);
+        GetObject(hBit, sizeof(BITMAP), &bit);*/
 
-        int nWidth = rtClient.right - rtClient.left;
-        int nHeight = rtClient.bottom - rtClient.top;
-        SetWindowPos(hWnd, NULL, 0, 0, nWidth, nHeight, SWP_NOMOVE);
-        MoveWindow(hWnd, 0, 0, nWidth, nHeight, TRUE);
-    }*/
-
-    // [step15_ex4] sine 그래프 그리기 MM_ISOTROPIC 모드, 원점 (cxClient / 2, cyClient / 2) STL vector 사용 sine 데이터 저장
-    {
-        RECT rtClient = { 0, 0, WIDTH, HEIGHT }; // Client Area
-        AdjustWindowRect(&rtClient, WS_OVERLAPPEDWINDOW, TRUE);
-
-        int nWidth = rtClient.right - rtClient.left;
-        int nHeight = rtClient.bottom - rtClient.top;
-
-        SetWindowPos(hWnd, NULL, 0, 0, nWidth, nHeight, SWP_NOMOVE);
-
-        for (double t = -2 * M_PI - 1; t <= 2 * M_PI + 1; t += 0.1)
-        {
-            POINT pt;
-            pt.x = round(t * SCALE);
-            pt.y = (int)(sin(t) * SCALE);
-            sine_points.push_back(pt);
-        }
-    }
-    break;
+        // [step16_ex2] StretchBlt 함수
+        //hBit = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
+        hBit = (HBITMAP)LoadImage(hInst, _T("doom.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+        GetObject(hBit, sizeof(hBit), &bit);
+        break;
     case WM_SIZE:
-        // [step15_ex1] MM_TEXT 모드, 원점 (cxClient/2, cyClient/2)
-        // [step15_ex2] MM_LOMETRIC 모드, 원점 변경
-        // [step15_ex3] MM_ISOMETIRC 모드, 원점 (cxClient/2, cyClient)
-        // [step15_ex4] sine 그래프 그리기 MM_ISOTROPIC 모드, 원점 (cxClient / 2, cyClient / 2) STL vector 사용 sine 데이터 저장
-        // 클라이언트 크기를 cxClient, cyClinet에 저장
         cxClient = LOWORD(lParam);
         cyClient = HIWORD(lParam);
         break;
-    
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -215,164 +169,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
-        // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-
-        // [step15_ex1] MM_TEXT 모드, 원점 (cxClient/2, cyClient/2)
-        /*
-        //SetMapMode(hdc, MM_TEXT);
-        SetViewportOrgEx(hdc, cxClient / 2, cyClient / 2, NULL); // 뷰 포트의 원점을 클라이언트 영역의 중심 (cxClient / 2, cyClient / 2)로 변경함
-        //SetWindowOrgEx(hdc, -cxClient / 2, -cyClient / 2, NULL);
-
-        RECT rt;
-        GetClientRect(hWnd, (LPRECT)&rt);   // 클라이언트 영역을 rt에 저장
-        DPtoLP(hdc, (LPPOINT)&rt, 2);       // rt의 두 좌표 (left, top), (right, bottom)을 윈도우 좌표로 변환
-        Rectangle(hdc, rt.left + 50, rt.top + 50, rt.right - 50, rt.bottom - 50);   // Rectangle 함수로 50만큼의 여백을 준 사각형 그림
-
-        TCHAR str[128];
-        wsprintf(str, _T("(%d, %d)"), rt.left + 50, rt.top + 50);
-        DrawText(hdc, str, -1, &rt, DT_LEFT | DT_TOP);  // (rt.left, rt.top) 좌표를 문자열로 출력
-
-        wsprintf(str, _T("(%d %d)"), rt.right - 50, rt.bottom - 50);
-        DrawText(hdc, str, -1, &rt, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);  // (rt.right, rt.bottom) 좌표를 문자열로 출력
-
-        // X-축
-        MoveToEx(hdc, -SIZE, 0, NULL);
-        LineTo(hdc, SIZE, 0);
-
-        // Y-축
-        MoveToEx(hdc, 0, -SIZE, NULL);
-        LineTo(hdc, 0, SIZE);*/
-
-        // [step15_ex2] MM_LOMETRIC 모드, 원점 변경
-        /*SetMapMode(hdc, MM_LOMETRIC); // MM_HIMETRIC
-        //SetViewportOrgEx(hdc, 0, cyClient, NULL);   // MM_LOMETRIC 매핑 모드에서 원점을 클라이언트 영역의 왼쪽 아래로 변경
-        SetViewportOrgEx(hdc, cxClient / 2, cyClient / 2, NULL);    // MM_LOMETRIC 매핑 모드에서 원점을 클라이언트 영역의 가운데로 변경 (사용 X)
-
-        //POINT pt;
-        //pt.x = cxClient;
-        //pt.y = cyClient;
-        //DPtoLP(hdc, &pt, 1);
-        //SetWindowOrgEx(hdc, -pt.x / 2, -pt.y / 2, NULL);  // MM_LOMETRIC 매핑 모드에서 클라이언트 영역을 pt에 저장한 뒤, 임의로 변경 (사용 X)
-
-        RECT rt;
-        GetClientRect(hWnd, (LPRECT)&rt);   // 클라이언트 영역을 rt에 저장
-        DPtoLP(hdc, (LPPOINT)&rt, 2);       // rt의 두 좌표 (left, top), (right, bottom)을 윈도우 좌표로 변환
-        Rectangle(hdc, rt.left + 50, rt.top - 50, rt.right - 50, rt.bottom + 50);   // Rectangle 함수로 50만큼의 여백을 준 사각형 그림
-
-        TCHAR str[128];
-        wsprintf(str, _T("(%d, %d)"), rt.left, rt.top);
-        DrawText(hdc, str, -1, &rt, DT_LEFT | DT_TOP);  // (rt.left, rt.top) 좌표를 문자열로 출력
-
-        wsprintf(str, _T("(%d %d)"), rt.right, rt.bottom);
-        DrawText(hdc, str, -1, &rt, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);  // (rt.right, rt.bottom) 좌표를 문자열로 출력
-
-        HPEN hPen = CreatePen(PS_SOLID, 10, RGB(0, 0, 255));
-        HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-
-        // X-축
-        MoveToEx(hdc, -SIZE, 0, NULL);
-        LineTo(hdc, SIZE, 0);
-
-        // Y-축
-        MoveToEx(hdc, 0, -SIZE, NULL);
-        LineTo(hdc, 0, SIZE);
-        SelectObject(hdc, hOldPen);
-        DeleteObject(hPen);*/
-
-        // [step15_ex3] MM_ISOMETIRC 모드, 원점 (cxClient/2, cyClient)
-        /*SetMapMode(hdc, MM_ISOTROPIC);  // SetMapMode 함수로 MM_ISOTROPIC 매핑 모드를 설정
-        //SetMapMode(hdc, MM_ANISOTROPIC);
-
-        // #1
-
-        SetViewportOrgEx(hdc, 0, cyClient, NULL);   // org = (left, lower)
-        SetWindowExtEx(hdc, 1000, 1000, NULL);
-        SetViewportExtEx(hdc, cxClient, -cyClient, NULL); // #1-1
-        //SetViewportExtEx(hdc, cxClient / 2, -cyClient / 2, NULL); // #1-2
-
-
-        // #2
-        SetViewportOrgEx(hdc, cxClient / 2, cyClient / 2, NULL); // org=center
-        SetWindowExtEx(hdc, 1000, 1000, NULL);
-        SetViewportExtEx(hdc, cxClient, -cyClient, NULL);   // #2-1
-        //SetViewportExtEx(hdc, cxClient / 2, -cyClient / 2, NULL);   // #2-2
-
-
-        RECT rt;
-        GetClientRect(hWnd, (LPRECT)&rt);
-        DPtoLP(hdc, (LPPOINT)&rt, 2);
-
-        Rectangle(hdc, rt.left + 50, rt.top - 50, rt.right - 50, rt.bottom + 50);
-
-        TCHAR str[128];
-        wsprintf(str, _T("(%d %d)"), rt.left, rt.top);
-        DrawText(hdc, str, -1, &rt, DT_LEFT | DT_TOP);
-        wsprintf(str, _T("(%d %d)"), rt.right, rt.bottom);
-        DrawText(hdc, str, -1, &rt, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
-
-        HPEN hPen = CreatePen(PS_SOLID, 10, RGB(0, 0, 255));
-        HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-
-        // X-축
-        MoveToEx(hdc, -SIZE, 0, NULL);
-        LineTo(hdc, SIZE, 0);
-
-        // Y-축
-        MoveToEx(hdc, 0, -SIZE, NULL);
-        LineTo(hdc, 0, SIZE);
-
-        SelectObject(hdc, hOldPen);
-        DeleteObject(hPen);
-        */
-
-        // [step15_ex4] sine 그래프 그리기 MM_ISOTROPIC 모드, 원점 (cxClient / 2, cyClient / 2) STL vector 사용 sine 데이터 저장
-        SetMapMode(hdc, MM_ISOTROPIC);
-        SetViewportOrgEx(hdc, cxClient / 2, cyClient / 2, NULL);
-        SetWindowExtEx(hdc, 10, 10, NULL);  // 
-        SetViewportExtEx(hdc, 4, -4, NULL);
-        //SetViewportExtEx(hdc, 10, -10, NULL);
-        
-        RECT rt;
-        GetClientRect(hWnd, (LPRECT)&rt);
-        DPtoLP(hdc, (LPPOINT)&rt, 2);
-        //Rectangle(hdc, rt.left + 10, rt.top - 10, rt.right - 10, rt.bottom + 10);
-
-        TCHAR str[128];
-        wsprintf(str, _T("(%d %d)"), rt.left, rt.top);
-        DrawText(hdc, str, -1, &rt, DT_LEFT | DT_TOP);
-
-        wsprintf(str, _T("(%d %d)"), rt.right, rt.bottom);
-        DrawText(hdc, str, -1, &rt, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE);
-
-        // X-축
-        MoveToEx(hdc, rt.left, 0, NULL);
-        LineTo(hdc, rt.right, 0);
-
-        // Y-축
-        MoveToEx(hdc, 0, rt.bottom, NULL);
-        LineTo(hdc, 0, rt.top);
-
-        HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
-        HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-        for (int i = 0; i < sine_points.size(); i++)
         {
-            POINT pt = sine_points[i];
-            if (i == 0)
-                MoveToEx(hdc, pt.x, pt.y, NULL);
-            else
-                LineTo(hdc, pt.x, pt.y);
-        }
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 
-        SelectObject(hdc, hOldPen);
-        DeleteObject(hPen);
-    
-        EndPaint(hWnd, &ps);
+            // [step16_ex1] BitBlt 함수
+            /*HDC memDC = CreateCompatibleDC(hdc);
+            HBITMAP hOldBit = (HBITMAP)SelectObject(memDC, hBit);
+
+            //BitBlt(hdc, 0, 0, bit.bmWidth, bit.bmHeight, memDC, 0, 0, SRCCOPY);
+            BitBlt(hdc, 100, 50, bit.bmWidth, bit.bmHeight, memDC, 0, 0, SRCCOPY);
+
+            SelectObject(memDC, hOldBit);
+            DeleteObject(memDC);*/
+
+            // [step16_ex2] StretchBlt 함수
+            //HDC memDC = CreateCompatibleDC(hdc);
+            //HBITMAP hOldBit = (HBITMAP)SelectObject(memDC, hBit);
+
+            StretchBlt(hdc, 0, 0, cxClient, cyClient, memDC, 0, 0, bit.bmWidth, bit.bmHeight, SRCCOPY);
+
+            //SelectObject(memDC, hOldBit);
+            //DeleteObject(memDC);
+
+            EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+        DeleteObject(memDC);
+        DeleteObject(hBit);
         PostQuitMessage(0);
         break;
     default:
