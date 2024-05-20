@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f8583428-43e7-48d0-a8eb-4f98a68300dc}</ProjectGuid>
+    <ProjectGuid>{b7913f44-8ddd-4359-86ec-2bad7b32585f}</ProjectGuid>
     <RootNamespace>WindowsAPILearning</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -139,7 +139,6 @@
     <ResourceCompile Include="Windows_API_Learning.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="doom.bmp" />
     <Image Include="small.ico" />
     <Image Include="Windows_API_Learning.ico" />
   </ItemGroup>
