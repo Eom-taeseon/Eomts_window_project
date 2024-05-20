@@ -6,33 +6,6 @@
 
 #define MAX_LOADSTRING 100
 
-// [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-/*#define STEP 10
-#define R 50*/
-
-// [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
-typedef enum {
-    OUTSIDE, INSIDE,
-    LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM
-}LOCATION_TYPE;
-
-typedef struct {
-    RECT rect;
-    COLORREF penColor;
-    COLORREF brushColor;
-    BOOL bSelected;
-}RECT_OBJECT;
-
-#define M 10
-
-void SetCornersRect(RECT rt, RECT rtCorners[])
-{
-    SetRect(&rtCorners[0], rt.left - M, rt.top - M, rt.left + M, rt.top + M);
-    SetRect(&rtCorners[1], rt.right - M, rt.top - M, rt.right + M, rt.top + M);
-    SetRect(&rtCorners[2], rt.left - M, rt.bottom - M, rt.left + M, rt.bottom + M);
-    SetRect(&rtCorners[3], rt.right - M, rt.bottom - M, rt.right + M, rt.bottom + M);
-}
-
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
@@ -101,11 +74,11 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WINDOWSAPILEARNING));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hCursor        = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR1)); // [step20_ex1] 윈도우 클래스 커서 등록
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_WINDOWSAPILEARNING);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDI_ICON1); // [step19_ex1]
     wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_ICON1)); // [step19_ex1]
 
     return RegisterClassExW(&wcex);
 }
@@ -150,258 +123,24 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step17_ex1] 더블 버퍼링 1
-    // static int cxClient, cyClient;
-    /*static RECT rtClient;
-    static HDC memDC;
-    static HBITMAP hBit;*/
+    // [step18_ex1]
+    static POINT pt1 = { 50, 50 };
+    static POINT pt2 = { 200, 100 };
+    static int graphType = IDM_LINE;
 
-    // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-    /*static HDC memDC;
-    static HBITMAP hBit;
+    // [step20_ex1] 윈도우 클래스 커서 등록
+    static RECT rt = { 50, 50, 200, 200 };
+    POINT ptMouse;
 
-    static POINT ptCircle;
-    static RECT rtClient;
-    static int direction = VK_RIGHT;*/
-
-    // [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
-    static RECT rtClient;
-    static HDC memDC;
-    static HBITMAP hBit;
-
-    static RECT_OBJECT object;
-    static RECT rtMove;
-    static LOCATION_TYPE clickLoc;
-    static POINT ptMouseDown;
-
-    POINT ptMouseMove, ptOffset;
-    RECT rt;
-    HPEN hPen, hOldPen;
-    HBRUSH hBrush, hOldBrush;
-
+    // [step20_ex2] SetCursor 함수
     switch (message)
     {
-    case WM_CREATE:
-        // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-        //SetTimer(hWnd, 1, 50, NULL);
-
-        // [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
-        object.rect = { 100, 00, 400, 400 };
-        object.penColor = RGB(0, 0, 0);
-        object.brushColor = RGB(255, 255, 0);
-        object.bSelected = FALSE;
-        break;
-
-    case WM_SIZE:
-        // [step17_ex1] 더블 버퍼링 1
-        /* {
-            //cxClient = LOWORD(lParam);
-            //cyClient = HIWORD(lParam);
-
-            GetClientRect(hWnd, &rtClient);
-
-            HDC hdc = GetDC(hWnd);
-            if (hBit)
-                DeleteObject(hBit);
-            hBit = CreateCompatibleBitmap(hdc, rtClient.right, rtClient.bottom);
-
-            if (memDC)
-                DeleteDC(memDC);
-            memDC = CreateCompatibleDC(hdc);
-            ReleaseDC(hWnd, hdc);
-            SelectObject(memDC, hBit);
-        }*/
-
-        // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-        /* {
-            GetClientRect(hWnd, &rtClient);
-            ptCircle.x = rtClient.right / 2;
-            ptCircle.y = rtClient.bottom / 2;
-
-            HDC hdc = GetDC(hWnd);
-            if (hBit)
-                DeleteObject(hBit);
-            hBit = CreateCompatibleBitmap(hdc, rtClient.right, rtClient.bottom);
-
-            if (memDC)
-                DeleteDC(memDC);
-            memDC = CreateCompatibleDC(hdc);
-            ReleaseDC(hWnd, hdc);
-            SelectObject(memDC, hBit);
-        }*/
-
-        // [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
-        {
-            GetClientRect(hWnd, &rtClient);
-            HDC hdc = GetDC(hWnd);
-            if (hBit)
-                DeleteObject(hBit);
-            hBit = CreateCompatibleBitmap(hdc, rtClient.right, rtClient.bottom);
-
-            if (memDC)
-                DeleteDC(memDC);
-            memDC = CreateCompatibleDC(hdc);
-
-            ReleaseDC(hWnd, hdc);
-            SelectObject(memDC, hBit);
-        }
-        break;
-    case WM_KEYDOWN:
-        // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-        /*switch (wParam)
-        {
-        case VK_LEFT:
-            direction = VK_LEFT;
-            break;
-        case VK_RIGHT:
-            direction = VK_RIGHT;
-            break;
-        case VK_UP:
-            direction = VK_UP;
-            break;
-        case VK_DOWN:
-            direction = VK_DOWN;
-            break;
-        }*/
-        break;
-    case WM_TIMER:
-        // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-        /*switch (direction)
-        {
-        case VK_LEFT:
-            ptCircle.x -= STEP;
-            break;
-        case VK_RIGHT:
-            ptCircle.x += STEP;
-            break;
-        case VK_UP:
-            ptCircle.y -= STEP;
-            break;
-        case VK_DOWN:
-            ptCircle.y += STEP;
-            break;
-        }
-        // check the boundaries and change the direction
-        if (ptCircle.x - R <= 0)
-        {
-            ptCircle.x = R;
-            direction = VK_RIGHT;
-        }
-        if (ptCircle.x + R >= rtClient.right)
-        {
-            ptCircle.x = rtClient.right - R;
-            direction = VK_LEFT;
-        }
-        if (ptCircle.y - R <= 0)
-        {
-            ptCircle.y = R;
-            direction = VK_DOWN;
-        }
-        if (ptCircle.y + R >= rtClient.bottom)
-        {
-            ptCircle.y = rtClient.bottom - R;
-            direction = VK_UP;
-        }
-        InvalidateRect(hWnd, NULL, FALSE);*/
-        break;
-    case WM_LBUTTONDOWN:
-        ptMouseDown.x = LOWORD(lParam);
-        ptMouseDown.y = HIWORD(lParam);
-
-        if (object.bSelected == FALSE)  // 기존 선택이 없는 경우
-        {
-            if (PtInRect(&object.rect, ptMouseDown))
-            {
-                object.bSelected = TRUE;
-                clickLoc = INSIDE;
-                rtMove = object.rect;
-            }
-            else
-            {
-                object.bSelected = FALSE;
-                clickLoc = OUTSIDE;
-            }
-        }
-
-        else // 기존 선택이 있는 경우
-        {
-            RECT rtCorners[4];
-            SetCornersRect(object.rect, rtCorners);
-            if (PtInRect(&rtCorners[0], ptMouseDown))
-                clickLoc = LEFT_TOP;
-            else if (PtInRect(&rtCorners[1], ptMouseDown))
-                clickLoc = RIGHT_TOP;
-            else if (PtInRect(&rtCorners[2], ptMouseDown))
-                clickLoc = LEFT_BOTTOM;
-            else if (PtInRect(&rtCorners[3], ptMouseDown))
-                clickLoc = RIGHT_BOTTOM;
-            else if (PtInRect(&object.rect, ptMouseDown))
-                clickLoc = INSIDE;
-            else
-                clickLoc = OUTSIDE;
-            
-            if (clickLoc == OUTSIDE)
-                object.bSelected = FALSE;
-        }
-        InvalidateRect(hWnd, NULL, FALSE);
-        break;
     case WM_MOUSEMOVE:
-        ptMouseMove.x = LOWORD(lParam);
-        ptMouseMove.y = HIWORD(lParam);
-        if (!(wParam & MK_LBUTTON) || !object.bSelected)
-            break;
+        ptMouse.x = LOWORD(lParam);
+        ptMouse.y = HIWORD(lParam);
 
-        ptOffset.x = ptMouseMove.x - ptMouseDown.x;
-        ptOffset.y = ptMouseMove.y - ptMouseDown.y;
-        rt = object.rect;
-        
-        switch (clickLoc)
-        {
-        case INSIDE:
-            SetRect(&rtMove, rt.left + ptOffset.x, rt.top + ptOffset.y, rt.right + ptOffset.x, rt.bottom + ptOffset.y);
-            break;
-        case LEFT_TOP:
-            SetRect(&rtMove, rt.left + ptOffset.x, rt.top + ptOffset.y, rt.right, rt.bottom);
-            break;
-        case LEFT_BOTTOM:
-            SetRect(&rtMove, rt.left + ptOffset.x, rt.top, rt.right, rt.bottom + ptOffset.y);
-            break;
-        case RIGHT_TOP:
-            SetRect(&rtMove, rt.left, rt.top + ptOffset.y, rt.right + ptOffset.x, rt.bottom);
-            break;
-        case RIGHT_BOTTOM:
-            SetRect(&rtMove, rt.left, rt.top, rt.right + ptOffset.x, rt.bottom + ptOffset.y);
-            break;
-        }
-        InvalidateRect(hWnd, NULL, FALSE);
-        break;
-    case WM_LBUTTONUP:
-        if (object.bSelected)
-        {
-            // 좌표 순서 재조정
-            if (rtMove.left > rtMove.right)  // swap
-            {
-                int tmp;
-                tmp = rtMove.left;
-                rtMove.left = rtMove.right;
-                rtMove.right = tmp;
-            }
-
-            if (rtMove.top > rtMove.bottom)  // swap
-            {
-                int tmp;
-                tmp = rtMove.top;
-                rtMove.top = rtMove.bottom;
-                rtMove.bottom = tmp;
-            }
-            object.rect = rtMove;
-        }
-        InvalidateRect(hWnd, NULL, FALSE);
-        break;
-    case WM_ERASEBKGND:
-        // [step17_ex1] 더블 버퍼링 1
-        // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-        // [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
+        if (PtInRect(&rt, ptMouse))
+            SetCursor(LoadCursor(nullptr, IDC_HAND));
         break;
     case WM_COMMAND:
         {
@@ -409,6 +148,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
+            // [step18_ex1]
+            case IDM_LINE:
+                graphType = IDM_LINE;
+                break;
+            case IDM_RECT:
+                graphType = IDM_RECT;
+                break;
+            case IDM_ELLIPSE:
+                graphType = IDM_ELLIPSE;
+                break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -419,6 +168,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
         }
+        InvalidateRect(hWnd, NULL, TRUE);
         break;
     case WM_PAINT:
         {
@@ -426,100 +176,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 
-            // [step17_ex1] 더블 버퍼링 1
-            /*/FillRect(memDC, &rtClient, (HBRUSH)(COLOR_WINDOW + 2));
-            Rectangle(memDC, 100, 100, 200, 200);   // 그리기
-
-            BitBlt(hdc, 0, 0, rtClient.right, rtClient.bottom, memDC, 0, 0, SRCCOPY);   // memDC -> hdc*/
-
-            // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-            /*FillRect(memDC, &rtClient, (HBRUSH)(COLOR_WINDOW + 2));
-
-            // draw circle
-            HPEN hPen, hOldPen;
-            HBRUSH hBrush, hOldBrush;
-
-            hPen = CreatePen(PS_INSIDEFRAME, 10, RGB(255, 0, 0));
-            hBrush = CreateSolidBrush(RGB(0, 0, 255));
-
-            hOldPen = (HPEN)SelectObject(memDC, hPen);
-            hOldBrush = (HBRUSH)SelectObject(memDC, hBrush);
-
-            Ellipse(memDC, ptCircle.x - R, ptCircle.y - R, ptCircle.x + R, ptCircle.y + R);
-
-            SelectObject(memDC, hOldPen);
-            SelectObject(memDC, hOldBrush);
-            DeleteObject(hPen);
-            DeleteObject(hBrush);
-
-            BitBlt(hdc, 0, 0, rtClient.right, rtClient.bottom, memDC, 0, 0, SRCCOPY); // memDC -> hdc
-            */
-
-            // [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
-            FillRect(memDC, &rtClient, (HBRUSH)(COLOR_WINDOW + 2));
-
-            if (clickLoc != OUTSIDE)  // draw rtMove
+            // [step18_ex1]
+            switch (graphType)
             {
-                hPen = CreatePen(PS_DOT, 1, RGB(0, 0, 0));
-                hBrush = CreateSolidBrush(RGB(255, 255, 255));
-                hOldPen = (HPEN)SelectObject(memDC, hPen);
-                hOldBrush = (HBRUSH)SelectObject(memDC, hBrush);
-
-                Rectangle(memDC, rtMove.left, rtMove.top, rtMove.right, rtMove.bottom);
-
-                SelectObject(memDC, hOldPen);
-                SelectObject(memDC, hOldBrush);
-                DeleteObject(hPen);
-                DeleteObject(hBrush);
+            case IDM_LINE:
+                MoveToEx(hdc, pt1.x, pt1.y, NULL);
+                LineTo(hdc, pt2.x, pt2.y);
+                break;
+            case IDM_RECT:
+                Rectangle(hdc, pt1.x, pt1.y, pt2.x, pt2.y);
+                break;
+            case IDM_ELLIPSE:
+                Ellipse(hdc, pt1.x, pt1.y, pt2.x, pt2.y);
+                break;
             }
 
-            // draw object
-            hPen = CreatePen(PS_SOLID, 1, object.penColor);
-            hBrush = CreateSolidBrush(object.brushColor);
-
-            hOldPen = (HPEN)SelectObject(memDC, hPen);
-            hOldBrush = (HBRUSH)SelectObject(memDC, hBrush);
-            
-            rt = object.rect;
-            Rectangle(memDC, rt.left, rt.top, rt.right, rt.bottom);
-
-            SelectObject(memDC, hOldPen);
-            SelectObject(memDC, hOldBrush);
-            DeleteObject(hPen);
-            DeleteObject(hBrush);
-
-            if (object.bSelected) // draw corners
-            {
-                hPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
-                hBrush = CreateSolidBrush(RGB(0, 0, 200));
-
-                hOldPen = (HPEN)SelectObject(memDC, hPen);
-                hOldBrush = (HBRUSH)SelectObject(memDC, hBrush);
-
-                RECT rtCorners[4];
-                SetCornersRect(object.rect, rtCorners);
-                for (int i = 0; i < 4; i++)
-                {
-                    Rectangle(memDC, rtCorners[i].left, rtCorners[i].top, rtCorners[i].right, rtCorners[i].bottom);
-                }
-
-                SelectObject(memDC, hOldPen);
-                SelectObject(memDC, hOldBrush);
-                DeleteObject(hPen);
-                DeleteObject(hBrush);
-            }
-
-            BitBlt(hdc, 0, 0, rtClient.right, rtClient.bottom, memDC, 0, 0, SRCCOPY);   // memDC -> hdc
+            // [step20_ex1] 윈도우 클래스 커서 등록
+            Rectangle(hdc, rt.left, rt.top, rt.right, rt.bottom);
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
-        // [step17_ex1] 더블 버퍼링 1
-        // [step17_ex3] 더블 버퍼링 3(마우스 사각형 선택, 이동, 크기 변경)
-        DeleteDC(memDC);
-        DeleteObject(hBit);
-        // [step17_ex2] 더블 버퍼링 2(타이머에 의한 원 움직이기)
-        //KillTimer(hWnd, 1);
         PostQuitMessage(0);
         break;
     default:
