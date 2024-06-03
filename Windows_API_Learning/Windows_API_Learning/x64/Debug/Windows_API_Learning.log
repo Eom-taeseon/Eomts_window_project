@@ -1,2 +1,2 @@
 ﻿  Windows_API_Learning.cpp
-  Windows_API_Learning.vcxproj -> C:\Users\umts2\OneDrive\Desktop\Win_API\Windows_API_Learning\x64\Debug\Windows_API_Learning.exe
+C:\Users\PC\OneDrive\Desktop\Win_API\Windows_API_Learning\Windows_API_Learning\Windows_API_Learning.cpp(231,38): error C2065: 'IDC_BITMAP1': 선언되지 않은 식별자입니다.
