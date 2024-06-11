@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1299a061-050d-42c1-a1a8-b309e4a0c7d2}</ProjectGuid>
+    <ProjectGuid>{951b16f9-f9e2-47c5-b478-70e2103c2a7a}</ProjectGuid>
     <RootNamespace>WindowsAPILearning</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>

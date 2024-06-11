@@ -6,24 +6,13 @@
 
 #define MAX_LOADSTRING 100
 
-// [step25_ex1] 푸시 버튼 컨트롤
-//#define IDC_BUTTON1 1001
-//#define IDC_BUTTON2 1002
+// [step26_ex1] 에디트 컨트롤
+//#define IDC_AGE     1001
+//#define IDC_NAME    1002
 
-// [step25_ex2] 체크 박스 컨트롤
-//#define IDC_BUTTON1 1001
-
-// [step25_ex3] 그룹 박스와 라디오 버튼 컨트롤
-/*//#define IDC_STATIC -1 // resource.h에 이미 있음
-#define IDC_NULL_PEN    1001
-#define IDC_BLACK_PEN   1002
-#define IDC_RED_PEN     1003
-#define IDC_BLUE_PEN    1004
-enum { IDC_NULL_BRUSH = 2001, IDC_WHITE_BRUSH, IDC_BLACK_BRUSH, IDC_BLUE_BRUSH };*/
-
-// [step25_ex4] 비트맵 푸시 버튼 컨트롤과 BS_BITMAP
-#define IDC_BUTTON1 1001
-#define IDC_BUTTON2 1002
+// [step26_ex2] 멀티 라인 에디트 컨트롤
+#define IDC_EDIT    1001
+#define MAX_STRING  5000
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -142,155 +131,80 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step25_ex1] 푸시 버튼 컨트롤
-    /*HWND hC1, hC2;
-    static int graph = IDC_BUTTON1;*/
+    // [step26_ex1] 에디트 컨트롤
+    /*static HWND hAge, hName;
+    static int nAge = 21;
+    static TCHAR szName[128] = _T("홍길동");
+    static TCHAR szAge[128];*/
 
-    // [step25_ex2] 체크 박스 컨트롤
-    /*static HWND hC1;
-    static BOOL bRect = TRUE;*/
-
-    // [step25_ex3] 그룹 박스와 라디오 버튼 컨트롤
-    /*static HWND hR[8];
-    static POINT pts[2] = { {20, 250}, {300, 400} };
-    static int penType = IDC_BLACK_PEN;
-    static int brushType = IDC_WHITE_BRUSH;*/
-
-    // [step25_ex4] 비트맵 푸시 버튼 컨트롤과 BS_BITMAP
-    HWND hC1, hC2;
-    static HBITMAP hBitmap1, hBitmap2;
-    static int graph = IDC_BUTTON1;
+    // [step26_ex2] 멀티 라인 에디트 컨트롤
+    static HWND hEdit;
+    static LPTSTR pszBuf;   // TCHAR *pszBuf;
+    static int  cxClient, cyClient;
 
     switch (message)
     {
     case WM_CREATE:
-        // [step25_ex1] 푸시 버튼 컨트롤
-        /*hC1 = CreateWindowW(_T("BUTTON"), _T("사각형"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-            10, 10, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
-        hC2 = CreateWindowW(_T("BUTTON"), _T("타원"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-            10, 60, 100, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);*/
+        // [step26_ex1] 에디트 컨트롤
+        /*hAge = CreateWindowW(_T("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER,
+            20, 10, 120, 20, hWnd, (HMENU)IDC_AGE, hInst, nullptr);
+        hName = CreateWindowW(_T("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
+            20, 40, 120, 20, hWnd, (HMENU)IDC_NAME, hInst, nullptr);
 
-        // [step25_ex2] 체크 박스 컨트롤
-        /*hC1 = CreateWindowW(_T("BUTTON"), _T("사각형"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
-            10, 10, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
-        SendMessage(hC1, BM_SETCHECK, BST_CHECKED, 0);*/
+        SetDlgItemInt(hWnd, IDC_AGE, nAge, FALSE);
+        SetDlgItemText(hWnd, IDC_NAME, szName);
+        wsprintf(szAge, _T("%d"), nAge);*/
 
-        // [step25_ex3] 그룹 박스와 라디오 버튼 컨트롤
-        /*CreateWindowW(_T("BUTTON"), _T("Pen Color"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-            10, 10, 120, 200, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
-
-        hR[0] = CreateWindowW(_T("BUTTON"), _T("NULL Pen"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-            20, 40, 100, 40, hWnd, (HMENU)IDC_NULL_PEN, hInst, nullptr);
-        hR[1] = CreateWindowW(_T("BUTTON"), _T("BLACK"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            20, 80, 100, 40, hWnd, (HMENU)IDC_BLACK_PEN, hInst, nullptr);
-        hR[2] = CreateWindowW(_T("BUTTON"), _T("RED"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            20, 120, 100, 40, hWnd, (HMENU)IDC_RED_PEN, hInst, nullptr);
-        hR[3] = CreateWindowW(_T("BUTTON"), _T("BLUE"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            20, 160, 100, 40, hWnd, (HMENU)IDC_BLUE_PEN, hInst, nullptr);
-        SendMessage(hR[1], BM_SETCHECK, BST_CHECKED, 0);
-
-        CreateWindowW(_T("BUTTON"), _T("Brush Color"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-            140, 10, 120, 200, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
-        hR[4] = CreateWindowW(_T("BUTTON"), _T("NULL Brush"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-            150, 40, 100, 40, hWnd, (HMENU)IDC_NULL_BRUSH, hInst, nullptr);
-        hR[5] = CreateWindowW(_T("BUTTON"), _T("White"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            150, 80, 100, 40, hWnd, (HMENU)IDC_WHITE_BRUSH, hInst, nullptr);
-        hR[6] = CreateWindowW(_T("BUTTON"), _T("Black"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            150, 120, 100, 40, hWnd, (HMENU)IDC_BLACK_BRUSH, hInst, nullptr);
-        hR[7] = CreateWindowW(_T("BUTTON"), _T("Blue"), WS_CHILD |WS_VISIBLE|BS_AUTORADIOBUTTON,
-            150, 160, 100, 40, hWnd, (HMENU)IDC_BLUE_BRUSH, hInst, nullptr);
-        SendMessage(hR[5], BM_SETCHECK, BST_CHECKED, 0);*/
-
-        // [step25_ex4] 비트맵 푸시 버튼 컨트롤과 BS_BITMAP
-    {
-        hC1 = CreateWindowW(_T("BUTTON"), NULL, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
-            10, 10, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
-        hC2 = CreateWindowW(_T("BUTTON"), NULL, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_BITMAP,
-            10, 60, 100, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);
-
-        // hC1에 생성한 비트맵 설정
-        RECT rt;
-        GetClientRect(hC1, &rt);
-        HDC hDC = GetDC(hWnd);
-        HDC memDC = CreateCompatibleDC(hDC);
-        hBitmap1 = CreateCompatibleBitmap(hDC, rt.right, rt.bottom);
-        SelectObject(memDC, hBitmap1);
-        SetDCBrushColor(memDC, RGB(0, 0, 255));
-
-        SetRect(&rt, rt.left + 5, rt.top + 5, rt.right - 5, rt.bottom - 5);
-        FillRect(memDC, &rt, (HBRUSH)GetStockObject(DC_BRUSH));
-
-        SetBkMode(memDC, TRANSPARENT);
-        SetTextColor(memDC, RGB(255, 0, 0));
-        DrawText(memDC, _T("사각형"), -1, &rt, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-        DeleteDC(memDC);
-        ReleaseDC(hWnd, hDC);
-        SendMessage(hC1, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap1);
-
-        // hC2에 로드한 비트맵 설정
-        hBitmap2 = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-        SendMessage(hC2, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap2);
-    }
+        // [step26_ex2] 멀티 라인 에디트 컨트롤
+        hEdit = CreateWindowW(_T("EDIT"), NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE,
+            CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, hWnd, (HMENU)IDC_EDIT, hInst, nullptr);
+        SetFocus(hEdit);
+        // pszBuf = new TCHAR[MAX_STRING];
+        pszBuf = (LPTSTR)LocalAlloc(LPTR, MAX_STRING * sizeof(TCHAR));
         break;
-
+    case WM_SIZE:
+        // [step26_ex2] 멀티 라인 에디트 컨트롤
+        // ShowWindow(hEdit, WS_MAXIMIZE);
+        cxClient = LOWORD(lParam);
+        cyClient = HIWORD(lParam);
+        MoveWindow(hEdit, 0, 0, cxClient, cyClient, FALSE);
+        // SetWindowPos(hEdit, NULL, 0, 0, cxClient, cyClient, SWP_NOREDRAW);
+        break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
-            // [step25_ex1] 푸시 버튼 컨트롤
-            /*case IDC_BUTTON1:
-                graph = IDC_BUTTON1;
-                InvalidateRect(hWnd, NULL, TRUE);
+            // [step26_ex1] 에디트 컨트롤
+            /*case IDC_AGE:
+                if (HIWORD(wParam) == EN_CHANGE)
+                {
+                    // TCHAR str[128];
+                    // GetWindowText(hAge, str, 128);
+                    // nAge = _wtoi(str);
+                    nAge = GetDlgItemInt(hWnd, IDC_AGE, NULL, FALSE);
+                    wsprintf(szAge, _T("%d"), nAge);
+                    InvalidateRect(hWnd, NULL, TRUE);
+                }
                 break;
-            case IDC_BUTTON2:
-                graph = IDC_BUTTON2;
-                InvalidateRect(hWnd, NULL, TRUE);
+
+            case IDC_NAME:
+                if (HIWORD(wParam) == EN_CHANGE)
+                {
+                    // GetWindowText(hName, szName, 128);
+                    GetDlgItemText(hWnd, IDC_NAME, szName, 128);
+                    InvalidateRect(hWnd, NULL, TRUE);
+                }
                 break;*/
 
-            // [step25_ex2] 체크 박스 컨트롤
-            /*case IDC_BUTTON1: // (HWND)lParam == hC1
-                bRect = SendMessage(hC1, BM_GETCHECK, 0, 0) == BST_CHECKED;
-                InvalidateRect(hWnd, NULL, TRUE);
-                break;*/
-
-            // [step25_ex3] 그룹 박스와 라디오 버튼 컨트롤
-            /*case IDC_NULL_PEN:
-                penType = IDC_NULL_PEN;
-                break;
-            case IDC_BLACK_PEN:
-                penType = IDC_BLACK_PEN;
-                break;
-            case IDC_RED_PEN:
-                penType = IDC_RED_PEN;
-                break;
-            case IDC_BLUE_PEN:
-                penType = IDC_BLUE_PEN;
-                break;
-            
-            case IDC_NULL_BRUSH:
-                brushType = IDC_NULL_BRUSH;
-                break;
-            case IDC_WHITE_BRUSH:
-                brushType = IDC_WHITE_BRUSH;
-                break;
-            case IDC_BLACK_BRUSH:
-                brushType = IDC_BLACK_BRUSH;
-                break;
-            case IDC_BLUE_BRUSH:
-                brushType = IDC_BLUE_BRUSH;
-                break;*/
-
-            // [step25_ex4] 비트맵 푸시 버튼 컨트롤과 BS_BITMAP
-            case IDC_BUTTON1:
-                graph = IDC_BUTTON1;
-                InvalidateRect(hWnd, NULL, TRUE);
-                break;
-
-            case IDC_BUTTON2:
-                graph = IDC_BUTTON2;
-                InvalidateRect(hWnd, NULL, TRUE);
+            // [step26_ex2] 멀티 라인 에디트 컨트롤
+            case IDC_EDIT:
+                if (HIWORD(wParam) == EN_CHANGE)
+                {
+                    GetWindowText(hEdit, pszBuf, MAX_STRING);
+                    // GetDlgItemText(hWnd, IDC_EDIT, pszBuf, MAX_STRING);
+                }
                 break;
 
             case IDM_ABOUT:
@@ -302,7 +216,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
-            InvalidateRect(hWnd, NULL, TRUE);
         }
         break;
     case WM_PAINT:
@@ -310,76 +223,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            // [step25_ex1] 푸시 버튼 컨트롤
-            /*if (graph == IDC_BUTTON1)
-                Rectangle(hdc, 150, 50, 400, 400);
-            else
-                Ellipse(hdc, 150, 50, 400, 400);*/
-
-            // [step25_ex2] 체크 박스 컨트롤
-            /*if (bRect)
-                Rectangle(hdc, 150, 50, 400, 400);
-            else
-                Ellipse(hdc, 150, 50, 400, 400);*/
-
-            // [step25_ex3] 그룹 박스와 라디오 버튼 컨트롤
-            /*HPEN hPen{};
-            HBRUSH hBrush;
-
-            switch (penType)
-            {
-            case IDC_NULL_PEN:
-                hPen = (HPEN)GetStockObject(NULL_PEN);
-                break;
-            case IDC_RED_PEN:
-                hPen = CreatePen(PS_SOLID, 4, RGB(255, 0, 0));
-                break;
-            case IDC_BLUE_PEN:
-                hPen = CreatePen(PS_SOLID, 4, RGB(0, 0, 255));
-                break;
-            case IDC_BLACK_PEN:
-                hPen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
-                break;
-            }
-
-            switch (brushType)
-            {
-            case IDC_NULL_BRUSH:
-                hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
-                break;
-            case IDC_WHITE_BRUSH:
-                // hBrush = CreateSolidBrush(RGB(255, 255, 255));
-                hBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
-                break;
-            case IDC_BLUE_BRUSH:
-                hBrush = CreateSolidBrush(RGB(0, 0, 255));
-                break;
-            default:    // IDC_BLACK_BRUSH
-                // hBrush = CreateSolidBrush(RGB(0, 0, 0));
-                hBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
-                break;
-            }
-
-            HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
-            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
-
-            Rectangle(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
-
-            SelectObject(hdc, oldPen);
-            DeleteObject(hPen);
-            SelectObject(hdc, oldBrush);
-            DeleteObject(hBrush);*/
-
-            // [step25_ex4] 비트맵 푸시 버튼 컨트롤과 BS_BITMAP
-            if (graph == IDC_BUTTON1)
-                Rectangle(hdc, 150, 50, 400, 400);
-            else
-                Ellipse(hdc, 150, 50, 400, 400);
+            // [step26_ex1] 에디트 컨트롤
+            /*TextOut(hdc, 20, 120, szAge, lstrlen(szAge));
+            TextOut(hdc, 20, 140, szName, lstrlen(szName));*/
 
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+        // [step26_ex2] 멀티 라인 에디트 컨트롤
+        // delete pszBuf;
+        LocalFree(pszBuf);
         PostQuitMessage(0);
         break;
     default:
