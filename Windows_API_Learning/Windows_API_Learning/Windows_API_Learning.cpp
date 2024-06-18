@@ -6,13 +6,10 @@
 
 #define MAX_LOADSTRING 100
 
-// [step26_ex1] 에디트 컨트롤
-//#define IDC_AGE     1001
-//#define IDC_NAME    1002
-
-// [step26_ex2] 멀티 라인 에디트 컨트롤
-#define IDC_EDIT    1001
-#define MAX_STRING  5000
+// [step27_ex1] 리스트 박스 컨트롤
+#define IDC_LIST1   1001
+LPCTSTR items[] = { _T("직선"), _T("타원"), _T("사각형") };
+enum { LINE, ELLIPSE, RECTANGLE };
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -131,44 +128,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step26_ex1] 에디트 컨트롤
-    /*static HWND hAge, hName;
-    static int nAge = 21;
-    static TCHAR szName[128] = _T("홍길동");
-    static TCHAR szAge[128];*/
-
-    // [step26_ex2] 멀티 라인 에디트 컨트롤
-    static HWND hEdit;
-    static LPTSTR pszBuf;   // TCHAR *pszBuf;
-    static int  cxClient, cyClient;
-
+    // [step27_ex1] 리스트 박스 컨트롤
+    HWND hList;
+    static int  graphType = LINE;
+    static POINT pts[] = { {200, 50}, {300, 300} };
     switch (message)
     {
     case WM_CREATE:
-        // [step26_ex1] 에디트 컨트롤
-        /*hAge = CreateWindowW(_T("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_NUMBER,
-            20, 10, 120, 20, hWnd, (HMENU)IDC_AGE, hInst, nullptr);
-        hName = CreateWindowW(_T("EDIT"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
-            20, 40, 120, 20, hWnd, (HMENU)IDC_NAME, hInst, nullptr);
-
-        SetDlgItemInt(hWnd, IDC_AGE, nAge, FALSE);
-        SetDlgItemText(hWnd, IDC_NAME, szName);
-        wsprintf(szAge, _T("%d"), nAge);*/
-
-        // [step26_ex2] 멀티 라인 에디트 컨트롤
-        hEdit = CreateWindowW(_T("EDIT"), NULL, WS_CHILD | WS_VISIBLE | ES_MULTILINE,
-            CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, hWnd, (HMENU)IDC_EDIT, hInst, nullptr);
-        SetFocus(hEdit);
-        // pszBuf = new TCHAR[MAX_STRING];
-        pszBuf = (LPTSTR)LocalAlloc(LPTR, MAX_STRING * sizeof(TCHAR));
+        // [step27_ex1] 리스트 박스 컨트롤
+        hList = CreateWindowW(_T("LISTBOX"), NULL, WS_CHILD|WS_VISIBLE | WS_BORDER | LBS_NOTIFY,
+            20, 40, 120, 100, hWnd, (HMENU)IDC_LIST1, hInst, nullptr);
+        for (int i = 0; i < 3; i++)
+            SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)items[i]);
+        SendMessage(hList, LB_SETCURSEL, LINE, 0);
         break;
     case WM_SIZE:
-        // [step26_ex2] 멀티 라인 에디트 컨트롤
-        // ShowWindow(hEdit, WS_MAXIMIZE);
-        cxClient = LOWORD(lParam);
-        cyClient = HIWORD(lParam);
-        MoveWindow(hEdit, 0, 0, cxClient, cyClient, FALSE);
-        // SetWindowPos(hEdit, NULL, 0, 0, cxClient, cyClient, SWP_NOREDRAW);
         break;
     case WM_COMMAND:
         {
@@ -176,37 +150,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
-            // [step26_ex1] 에디트 컨트롤
-            /*case IDC_AGE:
-                if (HIWORD(wParam) == EN_CHANGE)
+            // [step27_ex1] 리스트 박스 컨트롤
+            case IDC_LIST1:
+                if (HIWORD(wParam) == LBN_SELCHANGE)
                 {
-                    // TCHAR str[128];
-                    // GetWindowText(hAge, str, 128);
-                    // nAge = _wtoi(str);
-                    nAge = GetDlgItemInt(hWnd, IDC_AGE, NULL, FALSE);
-                    wsprintf(szAge, _T("%d"), nAge);
+                    TCHAR str[128];
+                    graphType = (int)SendMessage((HWND)lParam, LB_GETCURSEL, 0, 0); // lParam == hList
+                    SendMessage((HWND)lParam, LB_GETTEXT, graphType, (LPARAM)str);
                     InvalidateRect(hWnd, NULL, TRUE);
                 }
                 break;
-
-            case IDC_NAME:
-                if (HIWORD(wParam) == EN_CHANGE)
-                {
-                    // GetWindowText(hName, szName, 128);
-                    GetDlgItemText(hWnd, IDC_NAME, szName, 128);
-                    InvalidateRect(hWnd, NULL, TRUE);
-                }
-                break;*/
-
-            // [step26_ex2] 멀티 라인 에디트 컨트롤
-            case IDC_EDIT:
-                if (HIWORD(wParam) == EN_CHANGE)
-                {
-                    GetWindowText(hEdit, pszBuf, MAX_STRING);
-                    // GetDlgItemText(hWnd, IDC_EDIT, pszBuf, MAX_STRING);
-                }
-                break;
-
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -223,17 +176,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            // [step26_ex1] 에디트 컨트롤
-            /*TextOut(hdc, 20, 120, szAge, lstrlen(szAge));
-            TextOut(hdc, 20, 140, szName, lstrlen(szName));*/
+
+            // [step27_ex1] 리스트 박스 컨트롤
+            switch (graphType)
+            {
+            case LINE:
+                MoveToEx(hdc, pts[0].x, pts[0].y, NULL);
+                LineTo(hdc, pts[1].x, pts[1].y);
+                break;
+
+            case RECTANGLE:
+                Rectangle(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
+                break;
+
+            case ELLIPSE:
+                Ellipse(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
+                break;
+            }
 
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
-        // [step26_ex2] 멀티 라인 에디트 컨트롤
-        // delete pszBuf;
-        LocalFree(pszBuf);
         PostQuitMessage(0);
         break;
     default:
