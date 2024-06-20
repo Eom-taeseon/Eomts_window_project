@@ -6,8 +6,8 @@
 
 #define MAX_LOADSTRING 100
 
-// [step27_ex1] 리스트 박스 컨트롤
-#define IDC_LIST1   1001
+// [step28_ex1] 콤보 박스 컨트롤
+#define IDC_COMBO1  1001
 LPCTSTR items[] = { _T("직선"), _T("타원"), _T("사각형") };
 enum { LINE, ELLIPSE, RECTANGLE };
 
@@ -128,19 +128,24 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step27_ex1] 리스트 박스 컨트롤
-    HWND hList;
-    static int  graphType = LINE;
+    // [step28_ex1] 콤보 박스 컨트롤
+    static HWND hCombo;
+    static int graphType = LINE;
     static POINT pts[] = { {200, 50}, {300, 300} };
+
     switch (message)
     {
     case WM_CREATE:
-        // [step27_ex1] 리스트 박스 컨트롤
-        hList = CreateWindowW(_T("LISTBOX"), NULL, WS_CHILD|WS_VISIBLE | WS_BORDER | LBS_NOTIFY,
-            20, 40, 120, 100, hWnd, (HMENU)IDC_LIST1, hInst, nullptr);
+        // [step28_ex1] 콤보 박스 컨트롤
+        hCombo = CreateWindowW(_T("COMBOBOX"), NULL,
+            WS_CHILD | WS_VISIBLE | WS_BORDER | CBS_DROPDOWN,
+            20, 40, 120, 100, hWnd, (HMENU)IDC_COMBO1, hInst, nullptr);
+
         for (int i = 0; i < 3; i++)
-            SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)items[i]);
-        SendMessage(hList, LB_SETCURSEL, LINE, 0);
+        {
+            SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)items[i]);
+        }
+        SendMessage(hCombo, CB_SETCURSEL, LINE, 0);
         break;
     case WM_SIZE:
         break;
@@ -148,18 +153,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다:
+            // [step28_ex1] 콤보 박스 컨트롤
+            int i;
+            TCHAR str[128];
+
             switch (wmId)
             {
-            // [step27_ex1] 리스트 박스 컨트롤
-            case IDC_LIST1:
-                if (HIWORD(wParam) == LBN_SELCHANGE)
+            // [step28_ex1] 콤보 박스 컨트롤
+            case IDC_COMBO1:
+                switch (HIWORD(wParam))
                 {
-                    TCHAR str[128];
-                    graphType = (int)SendMessage((HWND)lParam, LB_GETCURSEL, 0, 0); // lParam == hList
-                    SendMessage((HWND)lParam, LB_GETTEXT, graphType, (LPARAM)str);
+                case CBN_SELCHANGE :
+                    // lParam == hCombo
+                    graphType = (int)SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+                    SendMessage((HWND)lParam, CB_GETLBTEXT, graphType, (LPARAM)str);
                     InvalidateRect(hWnd, NULL, TRUE);
+                    break;
+                case CBN_EDITCHANGE:
+                    GetWindowText((HWND)lParam, str, 128);
+
+                    // CB_FINDSTRING과 CB_FINDSTRINGEXACT
+                    // 메시지
+                    i = (int)SendMessage((HWND)lParam, CB_SELECTSTRING, 1, (LPARAM)str);
+                    if (i != CB_ERR)
+                    {
+                        graphType = i;
+                        InvalidateRect(hWnd, NULL, TRUE);
+                    }
+                    SetWindowText(hWnd, str);
+                    break;
                 }
                 break;
+                    
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -177,18 +202,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 
-            // [step27_ex1] 리스트 박스 컨트롤
+            // [step28_ex1] 콤보 박스 컨트롤
             switch (graphType)
             {
             case LINE:
                 MoveToEx(hdc, pts[0].x, pts[0].y, NULL);
                 LineTo(hdc, pts[1].x, pts[1].y);
                 break;
-
             case RECTANGLE:
                 Rectangle(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
                 break;
-
             case ELLIPSE:
                 Ellipse(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
                 break;
