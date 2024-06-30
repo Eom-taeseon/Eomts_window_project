@@ -6,10 +6,13 @@
 
 #define MAX_LOADSTRING 100
 
-// [step28_ex1] 콤보 박스 컨트롤
-#define IDC_COMBO1  1001
-LPCTSTR items[] = { _T("직선"), _T("타원"), _T("사각형") };
-enum { LINE, ELLIPSE, RECTANGLE };
+// [step29_ex1] 정적 컨트롤
+//#define IDC_COUNTER 1001
+//#define IDC_BUTTON1 1002
+//#define IDC_BUTTON2 1003
+
+// [step29_ex2] 정적 컨트롤에 비트맵 출력 
+#define IDC_PICTURE1 1001
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -128,24 +131,47 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step28_ex1] 콤보 박스 컨트롤
-    static HWND hCombo;
-    static int graphType = LINE;
-    static POINT pts[] = { {200, 50}, {300, 300} };
+    // [step29_ex1] 정적 컨트롤
+    /*static int  nCount = 10;
+    static BOOL bTimer = FALSE;*/
+
+    // [step29_ex2] 정적 컨트롤에 비트맵 출력
+    static HBITMAP hBit;
+    static BITMAP bit;
+    HWND hPicture;
 
     switch (message)
     {
     case WM_CREATE:
-        // [step28_ex1] 콤보 박스 컨트롤
-        hCombo = CreateWindowW(_T("COMBOBOX"), NULL,
-            WS_CHILD | WS_VISIBLE | WS_BORDER | CBS_DROPDOWN,
-            20, 40, 120, 100, hWnd, (HMENU)IDC_COMBO1, hInst, nullptr);
+        // [step29_ex1] 정적 컨트롤
+        /*CreateWindowW(_T("STATIC"), _T("COUNTER"), WS_CHILD | WS_VISIBLE,   // _T("STATIC") 윈도우 클래스로 _T("COUNTER") 이름의 정적 컨트롤 생성
+            20, 20, 70, 20, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
+        
+        CreateWindowW(_T("STATIC"), NULL, WS_CHILD | WS_VISIBLE,            // _T("STATIC") 윈도우 클래스로 변수 nCount를 출력하기 위한 정적 컨트롤 생성
+            100, 20, 100, 20, hWnd, (HMENU)IDC_COUNTER, hInst, nullptr); 
 
-        for (int i = 0; i < 3; i++)
-        {
-            SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)items[i]);
-        }
-        SendMessage(hCombo, CB_SETCURSEL, LINE, 0);
+        CreateWindowW(_T("BUTTON"), _T("Start"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, // _T("BUTTON") 윈도우 클래스로 _T("Start") 이름의 버튼 컨트롤 생성
+            20, 60, 120, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
+
+        CreateWindowW(_T("BUTTON"), _T("Reset"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, // _T("BUTTON") 윈도우 클래스로 _T("Reset") 이름의 버튼 컨트롤 생성
+            20, 120, 120, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);
+
+        SetDlgItemInt(hWnd, IDC_COUNTER, nCount, FALSE);    // 변수 nCount의 값을 IDC_COUNTER에 출력
+        */
+        
+        // [step29_ex2] 정적 컨트롤에 비트맵 출력
+        hBit = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1)); // IDB_BITMAP1을 불러와서
+        GetObject(hBit, sizeof(BITMAP), &bit);  // 비트맵 hBit의 정보를 bit에 저장한다
+        hPicture = CreateWindowW(_T("STATIC"), NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP | SS_NOTIFY,
+            10, 10, bit.bmWidth, bit.bmHeight, hWnd, (HMENU)IDC_PICTURE1, hInst, NULL);
+        SendMessage(hPicture, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBit);
+        break;
+    case WM_TIMER:
+        // [step29_ex1] 정적 컨트롤
+        /*nCount--;
+        SetDlgItemInt(hWnd, IDC_COUNTER, nCount, FALSE);
+        if (nCount == 0)
+            SendDlgItemMessageW(hWnd, IDC_BUTTON2, BM_CLICK, 0, 0)*/
         break;
     case WM_SIZE:
         break;
@@ -153,38 +179,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다:
-            // [step28_ex1] 콤보 박스 컨트롤
-            int i;
-            TCHAR str[128];
-
             switch (wmId)
             {
-            // [step28_ex1] 콤보 박스 컨트롤
-            case IDC_COMBO1:
-                switch (HIWORD(wParam))
+            // [step29_ex1] 정적 컨트롤
+            /*case IDC_BUTTON1:   // _T("Start") 버튼
+                if (bTimer)     // bTimer가 True라면 (= 타이머가 작동중이라면)
                 {
-                case CBN_SELCHANGE :
-                    // lParam == hCombo
-                    graphType = (int)SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
-                    SendMessage((HWND)lParam, CB_GETLBTEXT, graphType, (LPARAM)str);
-                    InvalidateRect(hWnd, NULL, TRUE);
-                    break;
-                case CBN_EDITCHANGE:
-                    GetWindowText((HWND)lParam, str, 128);
-
-                    // CB_FINDSTRING과 CB_FINDSTRINGEXACT
-                    // 메시지
-                    i = (int)SendMessage((HWND)lParam, CB_SELECTSTRING, 1, (LPARAM)str);
-                    if (i != CB_ERR)
-                    {
-                        graphType = i;
-                        InvalidateRect(hWnd, NULL, TRUE);
-                    }
-                    SetWindowText(hWnd, str);
-                    break;
+                    bTimer = FALSE; // 타이머 해제
+                    KillTimer(hWnd, 1);
+                    SetDlgItemText(hWnd, IDC_BUTTON1, _T("Start")); // IDC_BUTTON의 텍스트를 Start로 복귀
+                }
+                else   // 그 외 == bTimer가 FALSE라면 == 타이머가 작동하지 않는다면
+                {
+                    bTimer = TRUE;  // 타이머 가동
+                    SetTimer(hWnd, 1, 1000, NULL);  // 1 Timer 생성
+                    SendMessage(hWnd, WM_TIMER, 1, 0); 
+                    SetDlgItemText(hWnd, IDC_BUTTON1, _T("Stop"));  // IDC_BUTTON의 텍스트를 Stop으로 복귀
                 }
                 break;
-                    
+
+            case IDC_BUTTON2:   // _T("Reset") 버튼
+                bTimer = FALSE; // 타이머 해제
+                nCount = 10;    // nCount 초기화
+                KillTimer(hWnd, 1);
+                SetDlgItemInt(hWnd, IDC_COUNTER, nCount, FALSE);
+                SetDlgItemText(hWnd, IDC_BUTTON1, _T("Start")); // IDC_BUTTON1의 텍스트를 Start로 복귀
+                break;
+            */
+                
+            // [step29_ex2] 정적 컨트롤에 비트맵 출력
+            case IDC_PICTURE1:
+                if (HIWORD(wParam) == STN_CLICKED) // STN_DBLCLK
+                    MessageBox(hWnd, _T("Click"), _T("Msg"), MB_OK);
+                break;
+
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -201,26 +229,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-
-            // [step28_ex1] 콤보 박스 컨트롤
-            switch (graphType)
-            {
-            case LINE:
-                MoveToEx(hdc, pts[0].x, pts[0].y, NULL);
-                LineTo(hdc, pts[1].x, pts[1].y);
-                break;
-            case RECTANGLE:
-                Rectangle(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
-                break;
-            case ELLIPSE:
-                Ellipse(hdc, pts[0].x, pts[0].y, pts[1].x, pts[1].y);
-                break;
-            }
-
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+        // [step29_ex1] 정적 컨트롤
+        /*if (bTimer)
+            KillTimer(hWnd, 1);*/
+        // [step29_ex2] 정적 컨트롤에 비트맵 출력
+        DeleteObject(hBit);
         PostQuitMessage(0);
         break;
     default:

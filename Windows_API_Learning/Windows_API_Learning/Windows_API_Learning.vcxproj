@@ -139,6 +139,7 @@
     <ResourceCompile Include="Windows_API_Learning.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\diablo.bmp" />
     <Image Include="small.ico" />
     <Image Include="Windows_API_Learning.ico" />
   </ItemGroup>
