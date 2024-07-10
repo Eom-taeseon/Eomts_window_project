@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{951b16f9-f9e2-47c5-b478-70e2103c2a7a}</ProjectGuid>
+    <ProjectGuid>{de72b871-5984-4056-9209-54517d50c83d}</ProjectGuid>
     <RootNamespace>WindowsAPILearning</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -139,7 +139,6 @@
     <ResourceCompile Include="Windows_API_Learning.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\diablo.bmp" />
     <Image Include="small.ico" />
     <Image Include="Windows_API_Learning.ico" />
   </ItemGroup>

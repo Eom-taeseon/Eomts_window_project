@@ -6,13 +6,22 @@
 
 #define MAX_LOADSTRING 100
 
-// [step29_ex1] 정적 컨트롤
-//#define IDC_COUNTER 1001
-//#define IDC_BUTTON1 1002
-//#define IDC_BUTTON2 1003
+// [step30_ex1] 체크 박스의 컬러 변경
+/*#define IDC_BUTTON1 1001
+#define IDC_BUTTON2 1002*/
 
-// [step29_ex2] 정적 컨트롤에 비트맵 출력 
-#define IDC_PICTURE1 1001
+// [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
+/*enum {
+    IDC_RED = 1001,
+    IDC_GREEN, IDC_BLUE
+};*/
+
+// [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+/*#define IDC_EDIT1   1001*/
+
+// [step30_ex4] 리스트 박스의 컬러와 폰트 변경
+#define IDC_LIST1   1001
+LPCTSTR items[] = { _T("직선"), _T("타원"), _T("사각형") };
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -131,88 +140,175 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step29_ex1] 정적 컨트롤
-    /*static int  nCount = 10;
-    static BOOL bTimer = FALSE;*/
+    // [step30_ex1] 체크 박스의 컬러 변경
+    /*static HWND hC1, hC2;
+    static HBRUSH hBrush1, hBrush2;*/
 
-    // [step29_ex2] 정적 컨트롤에 비트맵 출력
-    static HBITMAP hBit;
-    static BITMAP bit;
-    HWND hPicture;
+    // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
+    /*static HWND hR[3];
+    static HBRUSH hBrush[4];*/
+
+    // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+    /*static HWND     hEdit1, hStatic;
+    static HBRUSH   hBrush1, hBrush2;
+    static HFONT    hFont;*/
+
+    // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
+    static HWND hList;
+    static HBRUSH hBrush1;
+    static HFONT hFont;
 
     switch (message)
     {
     case WM_CREATE:
-        // [step29_ex1] 정적 컨트롤
-        /*CreateWindowW(_T("STATIC"), _T("COUNTER"), WS_CHILD | WS_VISIBLE,   // _T("STATIC") 윈도우 클래스로 _T("COUNTER") 이름의 정적 컨트롤 생성
-            20, 20, 70, 20, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
-        
-        CreateWindowW(_T("STATIC"), NULL, WS_CHILD | WS_VISIBLE,            // _T("STATIC") 윈도우 클래스로 변수 nCount를 출력하기 위한 정적 컨트롤 생성
-            100, 20, 100, 20, hWnd, (HMENU)IDC_COUNTER, hInst, nullptr); 
+        // [step30_ex1] 체크 박스의 컬러 변경
+        /*hC1 = CreateWindowW(_T("BUTTON"), _T("check1"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+            10, 20, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
+        hC2 = CreateWindowW(_T("BUTTON"), _T("check2"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+            10, 60, 100, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);
 
-        CreateWindowW(_T("BUTTON"), _T("Start"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, // _T("BUTTON") 윈도우 클래스로 _T("Start") 이름의 버튼 컨트롤 생성
-            20, 60, 120, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
+        hBrush1 = CreateSolidBrush(RGB(0, 0, 255));
+        hBrush2 = CreateSolidBrush(RGB(255, 0, 0));*/
 
-        CreateWindowW(_T("BUTTON"), _T("Reset"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, // _T("BUTTON") 윈도우 클래스로 _T("Reset") 이름의 버튼 컨트롤 생성
-            20, 120, 120, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);
+        // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
+        /*CreateWindowW(_T("BUTTON"), _T("Pen Color"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+            10, 10, 120, 200, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
 
-        SetDlgItemInt(hWnd, IDC_COUNTER, nCount, FALSE);    // 변수 nCount의 값을 IDC_COUNTER에 출력
-        */
-        
-        // [step29_ex2] 정적 컨트롤에 비트맵 출력
-        hBit = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1)); // IDB_BITMAP1을 불러와서
-        GetObject(hBit, sizeof(BITMAP), &bit);  // 비트맵 hBit의 정보를 bit에 저장한다
-        hPicture = CreateWindowW(_T("STATIC"), NULL, WS_VISIBLE | WS_CHILD | SS_BITMAP | SS_NOTIFY,
-            10, 10, bit.bmWidth, bit.bmHeight, hWnd, (HMENU)IDC_PICTURE1, hInst, NULL);
-        SendMessage(hPicture, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBit);
+        hR[0] = CreateWindowW(_T("BUTTON"), _T("RED"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+            20, 40, 100, 40, hWnd, (HMENU)IDC_RED, hInst, nullptr);
+        hR[1] = CreateWindowW(_T("BUTTON"), _T("GREEN"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            20, 80, 100, 40, hWnd, (HMENU)IDC_GREEN, hInst, nullptr);
+        hR[2] = CreateWindowW(_T("BUTTON"), _T("BLUE"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+            20, 120, 100, 40, hWnd, (HMENU)IDC_BLUE, hInst, nullptr);
+        SendMessage(hR[1], BM_SETCHECK, BST_CHECKED, 0);
+
+        hBrush[0] = CreateSolidBrush(RGB(255, 0, 0));
+        hBrush[1] = CreateSolidBrush(RGB(0, 255, 0));
+        hBrush[2] = CreateSolidBrush(RGB(0, 0, 255));
+        hBrush[3] = CreateSolidBrush(RGB(0, 255, 255));*/
+
+        // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+        /*hStatic = CreateWindowW(_T("STATIC"), _T("COLOR"), WS_CHILD | WS_VISIBLE | WS_BORDER,
+            20, 20, 200, 40, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
+        hEdit1 = CreateWindowW(_T("EDIT"), _T("hello"), WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE,
+            20, 80, 350, 250, hWnd, (HMENU)IDC_EDIT1, hInst, nullptr);
+
+        hBrush1 = CreateSolidBrush(RGB(255, 0, 0));
+        hBrush2 = CreateSolidBrush(RGB(0, 0, 255));
+        hFont = CreateFont(40, 0, 0, 0, FW_NORMAL, 0, 0, 0,
+            HANGEUL_CHARSET, 0, 0, 0, 0, _T("바탕"));
+
+        SendMessage(hStatic, WM_SETFONT, (WPARAM)hFont, FALSE);
+        SendMessage(hEdit1, WM_SETFONT, (WPARAM)hFont, FALSE);
+        SetFocus(hEdit1);*/
+
+        // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
+        hList = CreateWindowW(_T("LISTBOX"), NULL, WS_CHILD|WS_VISIBLE|WS_BORDER|LBS_NOTIFY,
+            20, 40, 120, 100, hWnd, (HMENU)IDC_LIST1, hInst, nullptr);
+        for (int i = 0; i < 3; i++)
+            SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)items[i]);
+        SendMessage(hList, LB_SETCURSEL, 0, 0);
+        hBrush1 = CreateSolidBrush(RGB(255, 0, 0));
+        hFont = CreateFont(40, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("바탕"));
+        SendMessage(hList, WM_SETFONT, (WPARAM)hFont, FALSE);
         break;
-    case WM_TIMER:
-        // [step29_ex1] 정적 컨트롤
-        /*nCount--;
-        SetDlgItemInt(hWnd, IDC_COUNTER, nCount, FALSE);
-        if (nCount == 0)
-            SendDlgItemMessageW(hWnd, IDC_BUTTON2, BM_CLICK, 0, 0)*/
-        break;
-    case WM_SIZE:
-        break;
+    case WM_CTLCOLORSTATIC: // for check box
+    // [step30_ex1] 체크 박스의 컬러 변경
+    /*{
+        HWND ctrlWnd = (HWND)lParam;
+        HDC hdc = (HDC)wParam;
+        if (ctrlWnd == hC1)
+        {
+            SetTextColor(hdc, RGB(255, 0, 0));
+            // SetTextColor (hdc, RGB(0, 0, 255));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush1;
+        }
+        else
+        {
+            SetTextColor(hdc, RGB(0, 0, 255));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush2;
+        }
+    }*/
+    // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
+    /*{
+        HWND ctrlWnd = (HWND)lParam;
+        HDC hdc = (HDC)wParam;
+
+        if (ctrlWnd == hR[0])
+        {
+            SetTextColor(hdc, RGB(255, 255, 0));
+            // SetBkColor(hdc, RGB(255, 0, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush[0];
+        }
+        else if (ctrlWnd == hR[1])
+        {
+            SetTextColor(hdc, RGB(255, 255, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush[1];
+        }
+        else if (ctrlWnd == hR[2])
+        {
+            SetTextColor(hdc, RGB(255, 255, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush[2];
+        }
+        else
+        {
+            SetTextColor(hdc, RGB(255, 255, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush[3];
+        }
+    }*/
+    // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+    /*{
+        HWND ctrlWnd = (HWND)lParam;
+        HDC hdc = (HDC)wParam;
+        if (ctrlWnd == hStatic)
+        {
+            SetTextColor(hdc, RGB(0, 255, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            return (INT_PTR)hBrush1;
+        }
+    }*/
+    break;
+
+    case WM_CTLCOLOREDIT:
+    // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+    /* {
+        HWND ctrlWnd = (HWND)lParam;
+        HDC hdc = (HDC)wParam;
+        if (ctrlWnd == hEdit1)
+        {
+            SetTextColor(hdc, RGB(255, 0, 0));
+            SetBkColor(hdc, RGB(0, 0, 255));
+            return (INT_PTR)hBrush2;
+        }
+    }*/
+    break;
+
+    case WM_CTLCOLORLISTBOX:
+    // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
+    {
+        HWND ctrlWnd = (HWND)lParam;
+        HDC hdc = (HDC)wParam;
+        if (ctrlWnd == hList)
+        {
+            SetTextColor(hdc, RGB(0, 0, 255));
+            // SetBkColor(hdc, RGB(0, 255, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            return (LRESULT)hBrush1;
+        }
+    }
+    break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
-            // [step29_ex1] 정적 컨트롤
-            /*case IDC_BUTTON1:   // _T("Start") 버튼
-                if (bTimer)     // bTimer가 True라면 (= 타이머가 작동중이라면)
-                {
-                    bTimer = FALSE; // 타이머 해제
-                    KillTimer(hWnd, 1);
-                    SetDlgItemText(hWnd, IDC_BUTTON1, _T("Start")); // IDC_BUTTON의 텍스트를 Start로 복귀
-                }
-                else   // 그 외 == bTimer가 FALSE라면 == 타이머가 작동하지 않는다면
-                {
-                    bTimer = TRUE;  // 타이머 가동
-                    SetTimer(hWnd, 1, 1000, NULL);  // 1 Timer 생성
-                    SendMessage(hWnd, WM_TIMER, 1, 0); 
-                    SetDlgItemText(hWnd, IDC_BUTTON1, _T("Stop"));  // IDC_BUTTON의 텍스트를 Stop으로 복귀
-                }
-                break;
-
-            case IDC_BUTTON2:   // _T("Reset") 버튼
-                bTimer = FALSE; // 타이머 해제
-                nCount = 10;    // nCount 초기화
-                KillTimer(hWnd, 1);
-                SetDlgItemInt(hWnd, IDC_COUNTER, nCount, FALSE);
-                SetDlgItemText(hWnd, IDC_BUTTON1, _T("Start")); // IDC_BUTTON1의 텍스트를 Start로 복귀
-                break;
-            */
-                
-            // [step29_ex2] 정적 컨트롤에 비트맵 출력
-            case IDC_PICTURE1:
-                if (HIWORD(wParam) == STN_CLICKED) // STN_DBLCLK
-                    MessageBox(hWnd, _T("Click"), _T("Msg"), MB_OK);
-                break;
-
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -233,11 +329,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
-        // [step29_ex1] 정적 컨트롤
-        /*if (bTimer)
-            KillTimer(hWnd, 1);*/
-        // [step29_ex2] 정적 컨트롤에 비트맵 출력
-        DeleteObject(hBit);
+        // [step30_ex1] 체크 박스의 컬러 변경
+        /*DeleteObject(hBrush1);
+        DeleteObject(hBrush2);*/
+
+        // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
+        /*for (int i = 0; i < 4; i++)
+            DeleteObject(hBrush[i]);*/
+
+        // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+        /*DeleteObject(hBrush1);
+        DeleteObject(hBrush2);
+        DeleteObject(hFont);*/
+
+        // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
+        DeleteObject(hBrush1);
+        DeleteObject(hFont);
         PostQuitMessage(0);
         break;
     default:
