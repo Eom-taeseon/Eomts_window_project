@@ -6,22 +6,33 @@
 
 #define MAX_LOADSTRING 100
 
-// [step30_ex1] 체크 박스의 컬러 변경
+// [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
 /*#define IDC_BUTTON1 1001
 #define IDC_BUTTON2 1002*/
 
-// [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
-/*enum {
-    IDC_RED = 1001,
-    IDC_GREEN, IDC_BLUE
+// [step31_ex2] 푸시 버튼 오너 드로우 2 : WM_DRAWITEM
+/*#define IDC_BUTTON1 1001
+#define IDC_BUTTON2 1002*/
+
+// [step31_ex3] 리스트 박스 오너 드로우
+/*#define IDC_LIST1 1001
+COLORREF colors[] = {
+    RGB(255, 255, 255),
+    RGB(255, 0, 0),
+    RGB(0, 255, 0),
+    RGB(0, 0, 255),
+    RGB(0, 0, 0)
 };*/
 
-// [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
-/*#define IDC_EDIT1   1001*/
-
-// [step30_ex4] 리스트 박스의 컬러와 폰트 변경
-#define IDC_LIST1   1001
-LPCTSTR items[] = { _T("직선"), _T("타원"), _T("사각형") };
+// [step31_ex4] 콤보 박스 오너 드로우
+#define IDC_COMBO1 1001
+COLORREF colors[] = {
+    RGB(255, 255, 255),
+    RGB(255, 0, 0),
+    RGB(0, 255, 0),
+    RGB(0, 0, 255),
+    RGB(0, 0, 0)
+};
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -140,211 +151,291 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    // [step30_ex1] 체크 박스의 컬러 변경
+    // [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
     /*static HWND hC1, hC2;
-    static HBRUSH hBrush1, hBrush2;*/
+    static HBRUSH hBrush1, hBrush2;
+    static int graph = IDC_BUTTON1;*/
 
-    // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
-    /*static HWND hR[3];
-    static HBRUSH hBrush[4];*/
+    // [step31_ex2] 푸시 버튼 오너 드로우 2 : WM_DRAWITEM
+    /*static HWND hC1, hC2;
+    static int graph = IDC_BUTTON1;*/
 
-    // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
-    /*static HWND     hEdit1, hStatic;
-    static HBRUSH   hBrush1, hBrush2;
-    static HFONT    hFont;*/
+    // [step31_ex3] 리스트 박스 오너 드로우
+    /*static HWND hList;
+    static COLORREF brushColor = colors[0];
+    RECT rt = { 20, 250, 350, 400 };*/
 
-    // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
-    static HWND hList;
-    static HBRUSH hBrush1;
-    static HFONT hFont;
+    // [step31_ex4] 콤보 박스 오너 드로우
+    static HWND hCombo;
+    static COLORREF brushColor = colors[0];
+    RECT rt = { 20, 250, 350, 400 };
 
     switch (message)
     {
     case WM_CREATE:
-        // [step30_ex1] 체크 박스의 컬러 변경
-        /*hC1 = CreateWindowW(_T("BUTTON"), _T("check1"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
-            10, 20, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
-        hC2 = CreateWindowW(_T("BUTTON"), _T("check2"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
+        // [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
+        /*hC1 = CreateWindowW(_T("BUTTON"), _T("사각형"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW, // 오너 드로우 버튼 hC1 생성
+            10, 10, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
+        hC2 = CreateWindowW(_T("BUTTON"), _T("타원"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW,   // 오너 드로우 버튼 hC2 생성
             10, 60, 100, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);
+        hBrush1 = CreateSolidBrush(RGB(0, 0, 255)); // hC1 컨트롤의 배경색 hBrush1 생성
+        hBrush2 = CreateSolidBrush(RGB(0, 255, 0)); // hC2 컨트롤의 배경색 hBrush2 생성*/
 
-        hBrush1 = CreateSolidBrush(RGB(0, 0, 255));
-        hBrush2 = CreateSolidBrush(RGB(255, 0, 0));*/
+        // [step31_ex2] 푸시 버튼 오너 드로우 2 : WM_DRAWITEM
+        /*hC1 = CreateWindowW(_T("BUTTON"), NULL, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW,
+            10, 10, 100, 40, hWnd, (HMENU)IDC_BUTTON1, hInst, nullptr);
+        hC2 = CreateWindowW(_T("BUTTON"), NULL, WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW,
+            10, 60, 100, 40, hWnd, (HMENU)IDC_BUTTON2, hInst, nullptr);*/
+           
+        // [step31_ex3] 리스트 박스 오너 드로우
+        /*hList = CreateWindowW(_T("LISTBOX"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | LBS_NOTIFY | LBS_OWNERDRAWFIXED,
+            20, 40, 150, 220, hWnd, (HMENU)IDC_LIST1, hInst, nullptr);
+        for (int i = 0; i < 5; i++)
+            SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)colors[i]);*/
 
-        // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
-        /*CreateWindowW(_T("BUTTON"), _T("Pen Color"), WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-            10, 10, 120, 200, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
-
-        hR[0] = CreateWindowW(_T("BUTTON"), _T("RED"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-            20, 40, 100, 40, hWnd, (HMENU)IDC_RED, hInst, nullptr);
-        hR[1] = CreateWindowW(_T("BUTTON"), _T("GREEN"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            20, 80, 100, 40, hWnd, (HMENU)IDC_GREEN, hInst, nullptr);
-        hR[2] = CreateWindowW(_T("BUTTON"), _T("BLUE"), WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-            20, 120, 100, 40, hWnd, (HMENU)IDC_BLUE, hInst, nullptr);
-        SendMessage(hR[1], BM_SETCHECK, BST_CHECKED, 0);
-
-        hBrush[0] = CreateSolidBrush(RGB(255, 0, 0));
-        hBrush[1] = CreateSolidBrush(RGB(0, 255, 0));
-        hBrush[2] = CreateSolidBrush(RGB(0, 0, 255));
-        hBrush[3] = CreateSolidBrush(RGB(0, 255, 255));*/
-
-        // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
-        /*hStatic = CreateWindowW(_T("STATIC"), _T("COLOR"), WS_CHILD | WS_VISIBLE | WS_BORDER,
-            20, 20, 200, 40, hWnd, (HMENU)IDC_STATIC, hInst, nullptr);
-        hEdit1 = CreateWindowW(_T("EDIT"), _T("hello"), WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE,
-            20, 80, 350, 250, hWnd, (HMENU)IDC_EDIT1, hInst, nullptr);
-
-        hBrush1 = CreateSolidBrush(RGB(255, 0, 0));
-        hBrush2 = CreateSolidBrush(RGB(0, 0, 255));
-        hFont = CreateFont(40, 0, 0, 0, FW_NORMAL, 0, 0, 0,
-            HANGEUL_CHARSET, 0, 0, 0, 0, _T("바탕"));
-
-        SendMessage(hStatic, WM_SETFONT, (WPARAM)hFont, FALSE);
-        SendMessage(hEdit1, WM_SETFONT, (WPARAM)hFont, FALSE);
-        SetFocus(hEdit1);*/
-
-        // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
-        hList = CreateWindowW(_T("LISTBOX"), NULL, WS_CHILD|WS_VISIBLE|WS_BORDER|LBS_NOTIFY,
-            20, 40, 120, 100, hWnd, (HMENU)IDC_LIST1, hInst, nullptr);
-        for (int i = 0; i < 3; i++)
-            SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)items[i]);
-        SendMessage(hList, LB_SETCURSEL, 0, 0);
-        hBrush1 = CreateSolidBrush(RGB(255, 0, 0));
-        hFont = CreateFont(40, 0, 0, 0, FW_NORMAL, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, _T("바탕"));
-        SendMessage(hList, WM_SETFONT, (WPARAM)hFont, FALSE);
+        // [step31_ex4] 콤보 박스 오너 드로우
+        hCombo = CreateWindowW(_T("COMBOBOX"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED,
+            20, 40, 150, 220, hWnd, (HMENU)IDC_COMBO1, hInst, nullptr);
+        for (int i = 0; i < 5; i++)
+            SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)colors[i]);
         break;
-    case WM_CTLCOLORSTATIC: // for check box
-    // [step30_ex1] 체크 박스의 컬러 변경
-    /*{
-        HWND ctrlWnd = (HWND)lParam;
-        HDC hdc = (HDC)wParam;
-        if (ctrlWnd == hC1)
-        {
-            SetTextColor(hdc, RGB(255, 0, 0));
-            // SetTextColor (hdc, RGB(0, 0, 255));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush1;
-        }
-        else
-        {
-            SetTextColor(hdc, RGB(0, 0, 255));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush2;
-        }
-    }*/
-    // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
-    /*{
-        HWND ctrlWnd = (HWND)lParam;
-        HDC hdc = (HDC)wParam;
-
-        if (ctrlWnd == hR[0])
-        {
-            SetTextColor(hdc, RGB(255, 255, 0));
-            // SetBkColor(hdc, RGB(255, 0, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush[0];
-        }
-        else if (ctrlWnd == hR[1])
-        {
-            SetTextColor(hdc, RGB(255, 255, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush[1];
-        }
-        else if (ctrlWnd == hR[2])
-        {
-            SetTextColor(hdc, RGB(255, 255, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush[2];
-        }
-        else
-        {
-            SetTextColor(hdc, RGB(255, 255, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush[3];
-        }
-    }*/
-    // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
-    /*{
-        HWND ctrlWnd = (HWND)lParam;
-        HDC hdc = (HDC)wParam;
-        if (ctrlWnd == hStatic)
-        {
-            SetTextColor(hdc, RGB(0, 255, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            return (INT_PTR)hBrush1;
-        }
-    }*/
-    break;
-
-    case WM_CTLCOLOREDIT:
-    // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
+    case WM_CTLCOLORBTN:
+    // [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
     /* {
         HWND ctrlWnd = (HWND)lParam;
         HDC hdc = (HDC)wParam;
-        if (ctrlWnd == hEdit1)
+        RECT rt;
+        GetClientRect(ctrlWnd, &rt);
+
+        if (ctrlWnd == hC1)
         {
-            SetTextColor(hdc, RGB(255, 0, 0));
-            SetBkColor(hdc, RGB(0, 0, 255));
+            SetTextColor(hdc, RGB(255, 0, 0));      // hC1 글자색 설정
+            SetBkMode(hdc, TRANSPARENT);            // 글자 배경 모드를 TRANSPARENT로 설정
+            DrawText(hdc, _T("사각형"), -1, &rt,    
+                DT_CENTER | DT_VCENTER | DT_SINGLELINE);    // 화면 중앙에 "사각형" 출력
+            return (INT_PTR)hBrush1;    // 컨트롤의 배경에 사용할 hBrush1 qksghks
+        }
+
+        else if (ctrlWnd == hC2)
+        {
+            SetTextColor(hdc, RGB(0, 0, 255));
+            SetBkMode(hdc, TRANSPARENT);
+            DrawText(hdc, _T("타원"), -1, &rt,
+                DT_CENTER | DT_VCENTER | DT_SINGLELINE);
             return (INT_PTR)hBrush2;
         }
     }*/
     break;
+    case WM_DRAWITEM:
+    // [step31_ex2] 푸시 버튼 오너 드로우 2 : WM_DRAWITEM
+    /*{
+        LPDRAWITEMSTRUCT pdis = (LPDRAWITEMSTRUCT)lParam;   // lParam을 pdis에 저장
+        HDC hdc = pdis->hDC;    // pdis->hDC를 hdc에 저장
+        RECT rt = pdis->rcItem; // GetClientRect(pdis->hwndItem, &rt);
 
-    case WM_CTLCOLORLISTBOX:
-    // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
-    {
-        HWND ctrlWnd = (HWND)lParam;
-        HDC hdc = (HDC)wParam;
-        if (ctrlWnd == hList)
+        SetBkMode(hdc, TRANSPARENT);
+        switch (pdis->CtlID)
         {
-            SetTextColor(hdc, RGB(0, 0, 255));
-            // SetBkColor(hdc, RGB(0, 255, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            return (LRESULT)hBrush1;
+            case IDC_BUTTON1:
+                if (pdis->itemState & ODS_SELECTED) {
+                    SetTextColor(hdc, RGB(255, 0, 0));
+                    FillRect(hdc, &rt, GetSysColorBrush(COLOR_HIGHLIGHT));
+                    HPEN hPen = CreatePen(PS_INSIDEFRAME, 4, RGB(255, 0, 0));
+                    HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
+                    Rectangle(hdc, 0, 0, rt.right, rt.bottom);
+                    SelectObject(hdc, oldPen);
+                    DrawText(hdc, _T("사각형"), -1, &rt, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+                }
+
+                else {
+                    SetTextColor(hdc, RGB(0, 0, 255));
+                    FillRect(hdc, &rt, GetSysColorBrush(COLOR_BTNSHADOW));
+                    DrawText(hdc, _T("사각형"), -1, &rt, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+                }
+                break;
+
+            case IDC_BUTTON2:
+                SetTextColor(hdc, RGB(0, 0, 255));
+                if (pdis->itemState & ODS_SELECTED) {
+                    SetTextColor(hdc, RGB(255, 0, 0));
+                    FillRect(hdc, &rt, GetSysColorBrush(COLOR_HIGHLIGHT));
+                    DrawText(hdc, _T("타원"), -1, &rt, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+                }
+                else {
+                    SetTextColor(hdc, RGB(0, 0, 255));
+                    FillRect(hdc, &rt, GetSysColorBrush(COLOR_BTNFACE));
+                    DrawText(hdc, _T("타원"), -1, &rt, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+                }
+                break;
         }
+    }*/
+
+    // [step31_ex3] 리스트 박스 오너 드로우
+    /* {
+        LPDRAWITEMSTRUCT pdis = (LPDRAWITEMSTRUCT)lParam;
+        HDC hdc = pdis->hDC;
+        RECT rt = pdis->rcItem;
+        COLORREF color = (COLORREF)pdis->itemData;  // colors[i]
+
+        if (pdis->CtlID == IDC_LIST1)
+        {
+            HBRUSH hBrushBkg;
+            if (pdis->itemState & ODS_SELECTED)
+                hBrushBkg = GetSysColorBrush(COLOR_HIGHLIGHT);
+            else
+                hBrushBkg = GetSysColorBrush(COLOR_WINDOW);
+            FillRect(hdc, &rt, hBrushBkg);
+
+            HBRUSH hBrush = CreateSolidBrush(color);
+            SetRect(&rt, rt.left + 2, rt.top + 2, rt.right - 2, rt.bottom - 2);
+            FillRect(hdc, &rt, hBrush);
+            DeleteObject(hBrush);
+        }
+        return TRUE;
+    }*/
+
+    // [step31_ex4] 콤보 박스 오너 드로우
+    {
+        LPDRAWITEMSTRUCT pdis = (LPDRAWITEMSTRUCT)lParam;
+        HDC hdc = pdis->hDC;
+        RECT rt = pdis->rcItem;
+        COLORREF color = (COLORREF)pdis->itemData; // colors[i]
+
+        if (pdis->CtlID == IDC_COMBO1)
+        {
+            HBRUSH hBrushBkg;
+            if (pdis->itemState & ODS_SELECTED)
+                hBrushBkg = GetSysColorBrush(COLOR_HIGHLIGHT);
+            else
+                hBrushBkg = GetSysColorBrush(COLOR_WINDOW);
+            FillRect(hdc, &rt, hBrushBkg);
+
+            HBRUSH hBrush = CreateSolidBrush(color);
+            SetRect(&rt, rt.left + 2, rt.top + 2, rt.right - 2, rt.bottom - 2);
+            FillRect(hdc, &rt, hBrush);
+            DeleteObject(hBrush);
+        }
+        return TRUE;
+    }
+    break;
+    case WM_MEASUREITEM:
+    // [step31_ex3] 리스트 박스 오너 드로우
+    /* {
+        LPMEASUREITEMSTRUCT pmis = (LPMEASUREITEMSTRUCT)lParam;
+        pmis->itemHeight = 40;
+        return TRUE;
+    }*/
+
+    // [step31_ex4] 콤보 박스 오너 드로우
+    {
+        LPMEASUREITEMSTRUCT pmis = (LPMEASUREITEMSTRUCT)lParam;
+        pmis->itemHeight = 40;
+        return TRUE;
     }
     break;
     case WM_COMMAND:
+    {
+        int wmId = LOWORD(wParam);
+        // 메뉴 선택을 구문 분석합니다:
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
+        // [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
+        /*case IDC_BUTTON1:
+                graph = IDC_BUTTON1;
+                InvalidateRect(hWnd, NULL, TRUE);
+                break;
+            case IDC_BUTTON2:
+                graph = IDC_BUTTON2;
+                InvalidateRect(hWnd, NULL, TRUE);
+                break;*/
+
+        // [step31_ex2] 푸시 버튼 오너 드로우 2 : WM_DRAWITEM
+        /*case IDC_BUTTON1:
+                    graph = IDC_BUTTON1;
+                    InvalidateRect(hWnd, NULL, TRUE);
+                    break;
+                case IDC_BUTTON2:
+                    graph = IDC_BUTTON2;
+                    InvalidateRect(hWnd, NULL, TRUE);
+                    break;*/
+
+        // [step31_ex3] 리스트 박스 오너 드로우
+        /*case IDC_LIST1:
+                if (HIWORD(wParam) == LBN_SELCHANGE)
+                {
+                    int i;
+                    i = (int)SendMessage((HWND)lParam, LB_GETCURSEL, 0, 0);
+                    // brushColor = colors[i];
+                    brushColor = (COLORREF)SendMessage((HWND)lParam, LB_GETITEMDATA, i, 0);
+                    InvalidateRect(hWnd, NULL, TRUE);
+                }
+                break;*/
+        
+        // [step31_ex4] 콤보 박스 오너 드로우
+        case IDC_COMBO1:
+            if (HIWORD(wParam) == CBN_SELCHANGE)
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
+                int i;
+                i = (int)SendMessage((HWND)lParam, CB_GETCURSEL, 0, 0);
+                // brushColor = colors[i];
+                brushColor = (COLORREF)SendMessage((HWND)lParam, CB_GETITEMDATA, i, 0);
+                InvalidateRect(hWnd, NULL, TRUE);
             }
+            break;
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
         }
-        break;
+    }
+    break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
+            // [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
+            /*if (graph == IDC_BUTTON1)
+                Rectangle(hdc, 150, 50, 400, 400);
+            else
+                Ellipse(hdc, 150, 50, 400, 400);*/
+
+            // [step31_ex2] 푸시 버튼 오너 드로우 2 : WM_DRAWITEM
+            /*if (graph == IDC_BUTTON1)
+                Rectangle(hdc, 150, 50, 400, 400);
+            else
+                Ellipse(hdc, 150, 50, 400, 400);*/
+
+            // [step31_ex3] 리스트 박스 오너 드로우
+            /*HBRUSH hBrush = CreateSolidBrush(brushColor);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+            Rectangle(hdc, rt.left, rt.top, rt.right, rt.bottom);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(hBrush);*/
+
+            // [step31_ex4] 콤보 박스 오너 드로우
+            HBRUSH hBrush = CreateSolidBrush(brushColor);
+            HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+            Rectangle(hdc, rt.left, rt.top, rt.right, rt.bottom);
+
+            SelectObject(hdc, oldBrush);
+            DeleteObject(hBrush);
+
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
-        // [step30_ex1] 체크 박스의 컬러 변경
+        // [step31_ex1] 푸시 버튼 오너 드로우 1 : WM_CTLCOLORBTN
         /*DeleteObject(hBrush1);
         DeleteObject(hBrush2);*/
-
-        // [step30_ex2] 그룹 박스와 라디오 버튼의 컬러 변경
-        /*for (int i = 0; i < 4; i++)
-            DeleteObject(hBrush[i]);*/
-
-        // [step30_ex3] 정적 컨트롤과 에디트 컨트롤의 컬러와 폰트 변경
-        /*DeleteObject(hBrush1);
-        DeleteObject(hBrush2);
-        DeleteObject(hFont);*/
-
-        // [step30_ex4] 리스트 박스의 컬러와 폰트 변경
-        DeleteObject(hBrush1);
-        DeleteObject(hFont);
         PostQuitMessage(0);
         break;
     default:
