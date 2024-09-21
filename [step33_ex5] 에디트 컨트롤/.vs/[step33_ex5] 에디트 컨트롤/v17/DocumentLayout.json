@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1508C684-8A33-48E3-967B-41A838804B64}|[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.vcxproj|C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{1508C684-8A33-48E3-967B-41A838804B64}|[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.vcxproj|solutionrelative:[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp",
+              "DocumentMoniker": "C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp",
+              "RelativeDocumentMoniker": "[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp",
+              "ToolTip": "C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp",
+              "RelativeToolTip": "[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864\\[step33_ex5] \uC5D0\uB514\uD2B8 \uCEE8\uD2B8\uB864.cpp",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAADwAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-14T10:08:00.229Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
