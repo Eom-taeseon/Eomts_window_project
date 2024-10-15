@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{260EF288-26AA-4349-B454-6A948E6C4436}|[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.vcxproj|C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{260EF288-26AA-4349-B454-6A948E6C4436}|[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.vcxproj|solutionrelative:[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp",
+              "DocumentMoniker": "C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp",
+              "RelativeDocumentMoniker": "[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp",
+              "ToolTip": "C:\\Users\\umts2\\OneDrive\\Desktop\\Win_API\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp",
+              "RelativeToolTip": "[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2\\[step37_ex2] \uC11C\uBE0C\uD074\uB798\uC2F1 2.cpp",
+              "ViewState": "AQIAACIAAAAAAAAAAAAIwC4AAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-13T10:05:58.526Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

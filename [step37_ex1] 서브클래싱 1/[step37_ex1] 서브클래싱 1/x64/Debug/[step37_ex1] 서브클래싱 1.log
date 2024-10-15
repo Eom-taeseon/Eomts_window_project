@@ -1,0 +1,5 @@
+﻿  [step37_ex1] 서브클래싱 1.cpp
+C:\Users\umts2\OneDrive\Desktop\Win_API\[step37_ex1] 서브클래싱 1\[step37_ex1] 서브클래싱 1\[step37_ex1] 서브클래싱 1.cpp(36,67): warning C4311: '형식 캐스트': 'INT_PTR (__cdecl *)(HWND,UINT,WPARAM,LPARAM)'에서 'LONG'(으)로 포인터가 잘립니다.
+C:\Users\umts2\OneDrive\Desktop\Win_API\[step37_ex1] 서브클래싱 1\[step37_ex1] 서브클래싱 1\[step37_ex1] 서브클래싱 1.cpp(36,67): warning C4302: '형식 캐스트': 'INT_PTR (__cdecl *)(HWND,UINT,WPARAM,LPARAM)'에서 'LONG'(으)로 잘립니다.
+C:\Users\umts2\OneDrive\Desktop\Win_API\[step37_ex1] 서브클래싱 1\[step37_ex1] 서브클래싱 1\[step37_ex1] 서브클래싱 1.cpp(36,23): warning C4312: '형식 캐스트': 'LONG'에서 더 큰 'WNDPROC'(으)로의 변환입니다.
+  [step37_ex1] 서브클래싱 1.vcxproj -> C:\Users\umts2\OneDrive\Desktop\Win_API\[step37_ex1] 서브클래싱 1\x64\Debug\[step37_ex1] 서브클래싱 1.exe
