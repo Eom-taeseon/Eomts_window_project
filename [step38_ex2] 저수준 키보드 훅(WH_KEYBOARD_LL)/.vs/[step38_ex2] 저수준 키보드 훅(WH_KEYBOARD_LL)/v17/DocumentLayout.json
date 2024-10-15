@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0067A54A-8F57-4DF2-A163-D24BE9A397EF}|[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).vcxproj|C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0067A54A-8F57-4DF2-A163-D24BE9A397EF}|[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).vcxproj|solutionrelative:[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp",
+              "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp",
+              "RelativeDocumentMoniker": "[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp",
+              "RelativeToolTip": "[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL)\\[step38_ex2] \uC800\uC218\uC900 \uD0A4\uBCF4\uB4DC \uD6C5(WH_KEYBOARD_LL).cpp",
+              "ViewState": "AQIAAEUAAAAAAAAAAAAIwFIAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-15T15:31:45.665Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
