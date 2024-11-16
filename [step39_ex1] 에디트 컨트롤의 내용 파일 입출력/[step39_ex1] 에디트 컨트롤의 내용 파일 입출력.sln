@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "[step39_ex1] 에디트 컨트롤의 내용 파일 입출력", "[step39_ex1] 에디트 컨트롤의 내용 파일 입출력\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력.vcxproj", "{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Debug|x64.ActiveCfg = Debug|x64
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Debug|x64.Build.0 = Debug|x64
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Debug|x86.ActiveCfg = Debug|Win32
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Debug|x86.Build.0 = Debug|Win32
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Release|x64.ActiveCfg = Release|x64
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Release|x64.Build.0 = Release|x64
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Release|x86.ActiveCfg = Release|Win32
+		{07EAA28A-3C6B-4E1A-8B32-40009C42EB5A}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC9039FC-D962-43A9-9B2E-0E26ADBDA849}
+	EndGlobalSection
+EndGlobal

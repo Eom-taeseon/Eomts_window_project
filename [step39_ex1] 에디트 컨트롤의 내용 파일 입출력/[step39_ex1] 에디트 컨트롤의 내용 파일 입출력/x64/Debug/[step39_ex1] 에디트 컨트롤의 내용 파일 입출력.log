@@ -1,0 +1,4 @@
+﻿  [step39_ex1] 에디트 컨트롤의 내용 파일 입출력.cpp
+C:\Users\umts2\OneDrive\Desktop\Win_API\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력.cpp(61,55): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\umts2\OneDrive\Desktop\Win_API\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력.cpp(69,54): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  [step39_ex1] 에디트 컨트롤의 내용 파일 입출력.vcxproj -> C:\Users\umts2\OneDrive\Desktop\Win_API\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력\x64\Debug\[step39_ex1] 에디트 컨트롤의 내용 파일 입출력.exe
