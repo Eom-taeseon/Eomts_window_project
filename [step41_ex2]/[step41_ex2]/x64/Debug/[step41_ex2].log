@@ -1,0 +1,16 @@
+﻿  [step41_ex2].cpp
+[step41_ex2].obj : error LNK2019: sqlite3_closemain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_open16main 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_errmsgmain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_prepare16main 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_bind_intmain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_bind_text16main 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_column_countmain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_column_name16main 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_stepmain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_column_intmain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_column_text16main 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_finalizemain 함수에서 참조되는 확인할 수 없는 외부 기호
+[step41_ex2].obj : error LNK2019: sqlite3_resetmain 함수에서 참조되는 확인할 수 없는 외부 기호
+sqlite3.lib : warning LNK4272: 'x86' 라이브러리 컴퓨터 종류가 'x64' 대상 컴퓨터 종류와 충돌합니다.
+C:\Users\umts2\OneDrive\Desktop\Win_API\[step41_ex2]\x64\Debug\[step41_ex2].exe : fatal error LNK1120: 13개의 확인할 수 없는 외부 참조입니다.
