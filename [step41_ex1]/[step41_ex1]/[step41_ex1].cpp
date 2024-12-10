@@ -1,103 +1,215 @@
-﻿// [step41_ex1].cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-// ref1: https://www.sqlite.org/cintro.html
-// ref2: https://dcravey.wordpress.com/2011/03/21/using-sqlite-in-a-visual-c-application/
+﻿// [step41_ex1].cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
-#include "pch.h"
-#include <iostream>
-#include <iomanip> // setw
-#include <Windows.h> // for DeleteFile
-#include "sqlite3.h"
-#pragma comment(lib, "sqlite3.lib")
-using namespace std;
+#include "framework.h"
+#include "[step41_ex1].h"
 
-int main()
+#define MAX_LOADSTRING 100
+
+// 전역 변수:
+HINSTANCE hInst;                                // 현재 인스턴스입니다.
+WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
+WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
+HWND hMainWnd;  // 윈도우 핸들
+DWORD WINAPI ThreadProc(LPVOID lpParameter);    // thread procedure 원형
+
+// 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
+ATOM                MyRegisterClass(HINSTANCE hInstance);
+BOOL                InitInstance(HINSTANCE, int);
+LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+                     _In_opt_ HINSTANCE hPrevInstance,
+                     _In_ LPWSTR    lpCmdLine,
+                     _In_ int       nCmdShow)
 {
-    ::DeleteFile(L"test.db");   // DB 파일 삭제
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // #1: DB 파일 개방
-    sqlite3* db;
-    // if (sqlite3_open(":memory:", &db) != SQLITE_OK)  // 인 메모리 DB
-    if (sqlite3_open("test.db", &db) != SQLITE_OK)     // DB 개방 + 파일이 없으면 새로 생성
+    // TODO: 여기에 코드를 입력합니다.
+
+    // 전역 문자열을 초기화합니다.
+    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_STEP41EX1, szWindowClass, MAX_LOADSTRING);
+    MyRegisterClass(hInstance);
+
+    // 애플리케이션 초기화를 수행합니다:
+    if (!InitInstance (hInstance, nCmdShow))
     {
-        cerr << "Error: " << sqlite3_errmsg(db) << endl;
-        sqlite3_close(db);
-        return 1;
+        return FALSE;
     }
 
-    // #2: 테이블 생성
-    char* error;
-    const char* sql =   // SQL 문장 초기화
-        "CREATE TABLE IF NOT EXISTS STUDENT\
-            (id INTEGER PRIMARY KEY, name TEXT,\
-            dept TEXT, address TEXT, gender INTEGER);";
-    if (sqlite3_exec(db, sql, NULL, NULL, &error) != SQLITE_OK) // 
-    {
-        cerr << "ERROR: " << sqlite3_errmsg(db) << endl;
-        sqlite3_free(error);
-    }
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_STEP41EX1));
 
-    // #3: 레코드 삽입
-    sql = // SQL 문장 저장
-        "INSERT INTO STUDENT\
-            VALUES(1, '김철수', '컴퓨터공학', '서울시', TRUE);";
-    if (sqlite3_exec(db, sql, NULL, NULL, &error) != SQLITE_OK) // SQL 문장 실행
-    {
-        cerr << "ERROR: " << sqlite3_errmsg(db) << endl;
-        sqlite3_free(error);
-    }
-    sqlite3_exec(db, "INSERT INTO STUDENT\
-                        VALUES(2, '박인수', '국문학', '부산시', TRUE);",
-        NULL, NULL, &error);
-    sqlite3_exec(db, "INSERT INTO STUDENT\
-                        VALUES(3, '이영희', '영문학', '대전시', FALSE);",
-        NULL, NULL, &error);
+    MSG msg;
 
-    // #4: 레코드 조회, 출력
-    char **results = NULL;
-    int rows, columns;
-    sql = "SELECT * FROM STUDENT;"; // SQL 문장 저장
-    if (sqlite3_get_table(db, sql, &results, &rows, &columns, &error) != SQLITE_OK) // sqlite3_get_table 함수를 사용해 검색 결과 테이블을 results에 저장
+    // 기본 메시지 루프입니다:
+    while (GetMessage(&msg, nullptr, 0, 0))
     {
-        cerr << "ERROR: " << sqlite3_errmsg(db) << endl;
-        sqlite3_free(error);
-    }
-
-    else
-    {
-        // cout << "rows: " << rows << endl;
-        wcout << "rows: " << rows << endl;
-        wcout << "columns: " << columns << endl;
-        for (int r = 0; r <= rows; r++)  // 테이블 출력
+        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
-            for (int c = 0; c < columns; c++)
-            {
-                int k = (r * columns) + c;  // 셀 위치
-                wcout << setw(11) << results[k];    // 셀 출력
-            }
-            wcout << endl;  // 줄 변경
-
-            if (r == 0)    // 헤더 구분선 출력
-            {
-                for (int c = 0; c < columns; c++)
-                    wcout << setw(12) << "----------";
-                wcout << endl;  // 줄 변경
-            }
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
         }
     }
 
-    // #5. DB 파일 닫기
-    sqlite3_close(db);
+    return (int) msg.wParam;
+}
+
+
+
+//
+//  함수: MyRegisterClass()
+//
+//  용도: 창 클래스를 등록합니다.
+//
+ATOM MyRegisterClass(HINSTANCE hInstance)
+{
+    WNDCLASSEXW wcex;
+
+    wcex.cbSize = sizeof(WNDCLASSEX);
+
+    wcex.style          = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc    = WndProc;
+    wcex.cbClsExtra     = 0;
+    wcex.cbWndExtra     = 0;
+    wcex.hInstance      = hInstance;
+    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STEP41EX1));
+    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_STEP41EX1);
+    wcex.lpszClassName  = szWindowClass;
+    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+
+    return RegisterClassExW(&wcex);
+}
+
+//
+//   함수: InitInstance(HINSTANCE, int)
+//
+//   용도: 인스턴스 핸들을 저장하고 주 창을 만듭니다.
+//
+//   주석:
+//
+//        이 함수를 통해 인스턴스 핸들을 전역 변수에 저장하고
+//        주 프로그램 창을 만든 다음 표시합니다.
+//
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+{
+   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+
+   if (!hWnd)
+   {
+      return FALSE;
+   }
+
+   ShowWindow(hWnd, nCmdShow);
+   UpdateWindow(hWnd);
+
+   return TRUE;
+}
+
+//
+//  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
+//
+//  용도: 주 창의 메시지를 처리합니다.
+//
+//  WM_COMMAND  - 애플리케이션 메뉴를 처리합니다.
+//  WM_PAINT    - 주 창을 그립니다.
+//  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
+//
+//
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    static int nCount = 0;
+    switch (message)
+    {
+    case WM_CREATE:
+        hMainWnd = hWnd;    // 비지역 변수 hMainWnd에 윈도우 핸들 hWnd 저장
+        break;
+    case WM_COMMAND:
+        {
+            int wmId = LOWORD(wParam);
+            // 메뉴 선택을 구문 분석합니다:
+            switch (wmId)
+            {
+            case IDM_FUNCTION_CALL: // 단순 함수 호출
+                ThreadProc((LPVOID)nCount++);   // 함수 반환될 때까지 다른 함수 선택 불가능
+                break;
+            case IDM_THREAD_CREATE: // 스레드 생성 메뉴 항목
+                CreateThread(NULL, 0, ThreadProc, (LPVOID)nCount++, 0, 0);  // Thread 생성, ThreadProc에 매개변수 nCount++로 전달하면, thread가 반환하지 않아도 메뉴 항목 선택 가능
+                break;
+            case IDM_ABOUT:
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+                break;
+            case IDM_EXIT:
+                DestroyWindow(hWnd);
+                break;
+            default:
+                return DefWindowProc(hWnd, message, wParam, lParam);
+            }
+        }
+        break;
+    case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            EndPaint(hWnd, &ps);
+        }
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
     return 0;
 }
 
-// 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
-// 프로그램 디버그: <F5> 키 또는 [디버그] > [디버깅 시작] 메뉴
+// 정보 대화 상자의 메시지 처리기입니다.
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(lParam);
+    switch (message)
+    {
+    case WM_INITDIALOG:
+        return (INT_PTR)TRUE;
 
-// 시작을 위한 팁: 
-//   1. [솔루션 탐색기] 창을 사용하여 파일을 추가/관리합니다.
-//   2. [팀 탐색기] 창을 사용하여 소스 제어에 연결합니다.
-//   3. [출력] 창을 사용하여 빌드 출력 및 기타 메시지를 확인합니다.
-//   4. [오류 목록] 창을 사용하여 오류를 봅니다.
-//   5. [프로젝트] > [새 항목 추가]로 이동하여 새 코드 파일을 만들거나, [프로젝트] > [기존 항목 추가]로 이동하여 기존 코드 파일을 프로젝트에 추가합니다.
-//   6. 나중에 이 프로젝트를 다시 열려면 [파일] > [열기] > [프로젝트]로 이동하고 .sln 파일을 선택합니다.
+    case WM_COMMAND:
+        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+        {
+            EndDialog(hDlg, LOWORD(wParam));
+            return (INT_PTR)TRUE;
+        }
+        break;
+    }
+    return (INT_PTR)FALSE;
+}
+
+DWORD WINAPI ThreadProc(LPVOID lpParameter)
+{
+    TCHAR szBuffer[128];
+    int nCount = (int)lpParameter;
+    
+    // 스레드가 CPU에 의해 처리되는 것을 보이기 위해
+    HDC hdc = GetDC(hMainWnd);
+    for (int i = 0; i < 10000; i++)
+    {
+        Sleep(1);   // 지연을 위해
+        wsprintf(szBuffer, _T("Thread ID = %d, nCount=%d: i= %d"),
+            GetCurrentThreadId(), nCount, i);
+        TextOut(hdc, 10, 20 * nCount, szBuffer, lstrlen(szBuffer));
+    }
+    memset(szBuffer, 0, sizeof(szBuffer));
+    wsprintf(szBuffer, _T("Thread ID = %d is terminated!                         "), GetCurrentThreadId());
+    TextOut(hdc, 10, 20 * nCount, szBuffer, lstrlen(szBuffer));
+
+    ReleaseDC(hMainWnd, hdc);
+    return nCount;  // ExitThread(nCount);
+}
