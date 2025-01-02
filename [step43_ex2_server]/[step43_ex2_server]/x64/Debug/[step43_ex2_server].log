@@ -1,5 +1,0 @@
-﻿  pch.cpp
-  step43_ex2_server.cpp
-C:\Users\umts2\OneDrive\Desktop\Win_API\[step43_ex2_server]\[step43_ex2_server]\step43_ex2_server.cpp(16,13): warning C4002: 함수 같은 매크로 호출 'MAKEWORD'에 대해 인수가 너무 많습니다.
-  코드를 생성하고 있습니다...
-  [step43_ex2_server].vcxproj -> C:\Users\umts2\OneDrive\Desktop\Win_API\[step43_ex2_server]\x64\Debug\[step43_ex2_server].exe

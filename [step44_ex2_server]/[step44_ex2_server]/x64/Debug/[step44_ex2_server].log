@@ -1,0 +1,6 @@
+﻿  stdafx.cpp
+  [step44_ex2_server].cpp
+C:\Users\PC\OneDrive\Desktop\Win_API\[step44_ex2_server]\[step44_ex2_server]\[step44_ex2_server].cpp(166,32): warning C4244: '초기화 중': 'LRESULT'에서 'unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\PC\OneDrive\Desktop\Win_API\[step44_ex2_server]\[step44_ex2_server]\[step44_ex2_server].cpp(205,28): warning C4244: '=': 'LRESULT'에서 'unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+  [step44_ex2_server].vcxproj -> C:\Users\PC\OneDrive\Desktop\Win_API\[step44_ex2_server]\x64\Debug\[step44_ex2_server].exe
