@@ -1,0 +1,9 @@
+﻿  [step45_ex1_server].cpp
+C:\Users\PC\OneDrive\Desktop\Win_API\[step45_ex1_server]\[step45_ex1_server]\[step45_ex1_server].cpp(138,33): warning C4834: [[nodiscard]] 특성이 포함된 함수의 반환 값을 버리는 중입니다.
+C:\Users\PC\OneDrive\Desktop\Win_API\[step45_ex1_server]\[step45_ex1_server]\[step45_ex1_server].cpp(190,32): warning C4244: '초기화 중': 'LRESULT'에서 'unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\PC\OneDrive\Desktop\Win_API\[step45_ex1_server]\[step45_ex1_server]\[step45_ex1_server].cpp(243,28): warning C4244: '=': 'LRESULT'에서 'unsigned int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+[step45_ex1_server].rc(79): warning RC2182: duplicate dialog control ID 1002
+  
+[step45_ex1_server].rc(80): warning RC2182: duplicate dialog control ID 1002
+  
+  [step45_ex1_server].vcxproj -> C:\Users\PC\OneDrive\Desktop\Win_API\[step45_ex1_server]\x64\Debug\[step45_ex1_server].exe

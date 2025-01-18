@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B93D6989-DE1E-437D-81FD-44BBDA9AC247}|[step45_ex1_client]\\[step45_ex1_client].vcxproj|C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\[step45_ex1_client]\\[step45_ex1_client].rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u00A1 2$  \u0022     ",
+      "RelativeMoniker": "D:0:0:{B93D6989-DE1E-437D-81FD-44BBDA9AC247}|[step45_ex1_client]\\[step45_ex1_client].vcxproj|solutionrelative:[step45_ex1_client]\\[step45_ex1_client].rc||{177559E0-D141-11D0-92DF-00A0C9138C45}|,   b e g i n       % \u00A1 2$  \u0022     "
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B93D6989-DE1E-437D-81FD-44BBDA9AC247}|[step45_ex1_client]\\[step45_ex1_client].vcxproj|C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\[step45_ex1_client]\\[step45_ex1_client].cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{B93D6989-DE1E-437D-81FD-44BBDA9AC247}|[step45_ex1_client]\\[step45_ex1_client].vcxproj|solutionrelative:[step45_ex1_client]\\[step45_ex1_client].cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "[step45_ex1_client].rc - IDD_DIALOG1 - Dialog",
+              "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\[step45_ex1_client]\\[step45_ex1_client].rc",
+              "RelativeDocumentMoniker": "[step45_ex1_client]\\[step45_ex1_client].rc",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\[step45_ex1_client]\\[step45_ex1_client].rc - IDD_DIALOG1 - Dialog",
+              "RelativeToolTip": "[step45_ex1_client]\\[step45_ex1_client].rc - IDD_DIALOG1 - Dialog",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-01-12T07:44:02.846Z",
+              "EditorCaption": " - IDD_DIALOG1 - Dialog"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "[step45_ex1_client].cpp",
+              "DocumentMoniker": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\[step45_ex1_client]\\[step45_ex1_client].cpp",
+              "RelativeDocumentMoniker": "[step45_ex1_client]\\[step45_ex1_client].cpp",
+              "ToolTip": "C:\\Users\\PC\\OneDrive\\Desktop\\Win_API\\[step45_ex1_client]\\[step45_ex1_client]\\[step45_ex1_client].cpp",
+              "RelativeToolTip": "[step45_ex1_client]\\[step45_ex1_client].cpp",
+              "ViewState": "AQIAAIUCAAAAAAAAAAAwwJYCAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-01-07T13:59:00.573Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
